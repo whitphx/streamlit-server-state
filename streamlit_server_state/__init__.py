@@ -2,6 +2,7 @@ import threading
 import weakref
 from typing import Generic, TypeVar
 
+from streamlit.report_session import ReportSession
 from streamlit.server.server import Server
 
 from .streamlit_session_state import get_this_session_info
@@ -13,8 +14,8 @@ class ServerState(Generic[StateValueT]):
     _value: StateValueT
     _value_lock: threading.Lock
 
-    _bound_sessions = weakref.WeakSet
-    _bound_sessions_lock = threading.Lock
+    _bound_sessions: "weakref.WeakSet[ReportSession]"
+    _bound_sessions_lock: threading.Lock
 
     def __init__(self, value: StateValueT) -> None:
         self._value = value
@@ -58,11 +59,12 @@ def use_server_state(key: str, initial_value: StateValueT) -> ServerState[StateV
 
     attr_name = f"{SERVER_STATE_KEY_PREFIX}{key}"
 
+    server_state: ServerState[StateValueT]
     if not hasattr(server, attr_name):
         server_state = ServerState(initial_value)
         setattr(server, attr_name, server_state)
     else:
-        server_state: ServerState[StateValueT] = getattr(server, attr_name)
+        server_state = getattr(server, attr_name)
 
     server_state._setup_for_this_session()
 
