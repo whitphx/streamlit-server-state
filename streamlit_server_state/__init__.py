@@ -8,7 +8,7 @@ except Exception:
     # Streamlit >= 0.65.0
     from streamlit.server.server import Server
 
-from streamlit_session_state import get_this_session
+from .streamlit_session_state import get_this_session
 
 StateValueT = TypeVar("StateValueT")
 
