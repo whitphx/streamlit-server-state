@@ -1,6 +1,6 @@
 import streamlit as st
 
-from streamlit_server_state import use_server_state
+from streamlit_server_state.server_state_item import use_server_state
 
 
 def main():
