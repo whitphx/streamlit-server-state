@@ -2,13 +2,9 @@ import threading
 import weakref
 from typing import Generic, TypeVar
 
-try:
-    from streamlit.server.Server import Server
-except Exception:
-    # Streamlit >= 0.65.0
-    from streamlit.server.server import Server
+from streamlit.server.server import Server
 
-from .streamlit_session_state import get_this_session
+from .streamlit_session_state import get_this_session_info
 
 StateValueT = TypeVar("StateValueT")
 
@@ -28,7 +24,13 @@ class ServerState(Generic[StateValueT]):
         self._bound_sessions_lock = threading.Lock()
 
     def _setup_for_this_session(self) -> None:
-        this_session = get_this_session()
+        this_session_info = get_this_session_info()
+        if this_session_info is None:
+            raise RuntimeError(
+                "Oh noes. Couldn't get your Streamlit Session object. "
+                "Are you doing something fancy with threads?"
+            )
+        this_session = this_session_info.session
         with self._bound_sessions_lock:
             self._bound_sessions.add(this_session)
 
