@@ -1,10 +1,10 @@
 try:
     import streamlit.ReportThread as ReportThread
-    from streamlit.server.Server import Server, ReportSession
+    from streamlit.server.Server import ReportSession, Server
 except Exception:
     # Streamlit >= 0.65.0
     import streamlit.report_thread as ReportThread
-    from streamlit.server.server import Server, ReportSession
+    from streamlit.server.server import ReportSession, Server
 
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 

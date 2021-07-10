@@ -1,0 +1,13 @@
+[flake8]
+exclude =
+    .git,
+    .venv,
+    __pycache__,
+    build,
+    dist,
+    fronend,
+    data,
+    models
+# Black compatible configs
+max-line-length = 88
+extend-ignore = E203, W503

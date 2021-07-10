@@ -1,6 +1,6 @@
-from typing import TypeVar, Generic
 import threading
 import weakref
+from typing import Generic, TypeVar
 
 try:
     from streamlit.server.Server import Server
@@ -10,8 +10,7 @@ except Exception:
 
 from streamlit_session_state import get_this_session
 
-
-StateValueT = TypeVar('StateValueT')
+StateValueT = TypeVar("StateValueT")
 
 
 class ServerState(Generic[StateValueT]):
@@ -50,7 +49,6 @@ class ServerState(Generic[StateValueT]):
 
 
 SERVER_STATE_KEY_PREFIX = "_server_state_"
-
 
 
 def use_server_state(key: str, initial_value: StateValueT) -> ServerState[StateValueT]:

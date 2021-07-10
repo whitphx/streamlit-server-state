@@ -1,9 +1,10 @@
 import streamlit as st
+
 from streamlit_server_state import use_server_state
 
 
 def main():
-    chat_messages_state = use_server_state("chat_messages", []);
+    chat_messages_state = use_server_state("chat_messages", [])
 
     message = st.text_input("Message")
     send = st.button("Send")
