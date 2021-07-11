@@ -19,7 +19,10 @@ def main():
                 server_state["rooms"] = server_state["rooms"] + [new_room_name]
 
         st.text_input("Room name", key="new_room_name")
-        st.form_submit_button("Create", on_click=on_create)
+        st.form_submit_button("Create a new room", on_click=on_create)
+
+    if not room:
+        return
 
     room_key = f"room_{room}"
     if room_key not in server_state:
