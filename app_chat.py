@@ -1,6 +1,6 @@
 import streamlit as st
 
-from streamlit_server_state import server_state
+from streamlit_server_state import server_state, server_state_lock
 
 
 def main():
@@ -17,9 +17,10 @@ def main():
             "nickname": nickname,
             "text": new_message_text,
         }
-        server_state["chat_messages"] = server_state["chat_messages"] + [
-            new_message_packet
-        ]
+        with server_state_lock["chat_messages"]:
+            server_state["chat_messages"] = server_state["chat_messages"] + [
+                new_message_packet
+            ]
 
     if "chat_messages" not in server_state:
         server_state["chat_messages"] = []
