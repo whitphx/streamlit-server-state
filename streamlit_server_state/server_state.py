@@ -47,7 +47,7 @@ class ServerState(collections.abc.MutableMapping):
         return item._is_set
 
     def __iter__(self) -> Iterator[str]:
-        return self._items.__iter__()
+        return (k for k, _ in ((k, v) for k, v in self._items.items() if v._is_set))
 
     def __len__(self) -> int:
-        return self._items.__len__()
+        return len([i for i in self._items.values() if i._is_set])
