@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 from streamlit.report_session import ReportSession
 
-from .streamlit_session_state import get_this_session_info
+from .session_info import get_this_session_info
 
 StateValueT = TypeVar("StateValueT")
 
@@ -28,7 +28,7 @@ class ServerStateItem(Generic[StateValueT]):
         self._bound_sessions = weakref.WeakSet()
         self._bound_sessions_lock = threading.Lock()
 
-    def _setup_for_this_session(self) -> None:
+    def setup_for_this_session(self) -> None:
         this_session_info = get_this_session_info()
         if this_session_info is None:
             raise RuntimeError(

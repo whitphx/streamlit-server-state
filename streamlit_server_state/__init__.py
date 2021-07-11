@@ -21,7 +21,7 @@ class ServerState(collections.abc.MutableMapping):
     def _ensure_item_in_this_session(self, k: str) -> ServerStateItem:
         item = self._ensure_item(k)
 
-        item._setup_for_this_session()
+        item.setup_for_this_session()
 
         return item
 
