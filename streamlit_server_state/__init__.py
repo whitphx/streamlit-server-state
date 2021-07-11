@@ -1,71 +1,67 @@
-import threading
-import weakref
-from typing import Generic, TypeVar
+import collections.abc
+from typing import Any, Dict, Iterator
 
-from streamlit.report_session import ReportSession
 from streamlit.server.server import Server
 
-from .streamlit_session_state import get_this_session_info
-
-StateValueT = TypeVar("StateValueT")
+from .server_state_item import ServerStateItem, ValueNotSetError
 
 
-class ServerState(Generic[StateValueT]):
-    _value: StateValueT
-    _value_lock: threading.Lock
+class ServerState(collections.abc.MutableMapping):
+    _items: Dict[str, ServerStateItem] = {}
 
-    _bound_sessions: "weakref.WeakSet[ReportSession]"
-    _bound_sessions_lock: threading.Lock
+    def _ensure_item(self, k: str) -> ServerStateItem:
+        if k in self._items:
+            item = self._items[k]
+        else:
+            item = ServerStateItem()
+            self._items[k] = item
 
-    def __init__(self, value: StateValueT) -> None:
-        self._value = value
-        self._value_lock = threading.Lock()
+        return item
 
-        self._bound_sessions = weakref.WeakSet()
-        self._bound_sessions_lock = threading.Lock()
+    def _ensure_item_in_this_session(self, k: str) -> ServerStateItem:
+        item = self._ensure_item(k)
 
-    def _setup_for_this_session(self) -> None:
-        this_session_info = get_this_session_info()
-        if this_session_info is None:
-            raise RuntimeError(
-                "Oh noes. Couldn't get your Streamlit Session object. "
-                "Are you doing something fancy with threads?"
-            )
-        this_session = this_session_info.session
-        with self._bound_sessions_lock:
-            self._bound_sessions.add(this_session)
+        item._setup_for_this_session()
 
-    def _rerun_bound_sessions(self) -> None:
-        with self._bound_sessions_lock:
-            for session in self._bound_sessions:
-                session.request_rerun()  # HACK: XD
+        return item
 
-    def set_value(self, value: StateValueT) -> None:
-        with self._value_lock:
-            self._value = value
+    def __setitem__(self, k: str, v: Any) -> None:
+        item = self._ensure_item(k)
+        item.set_value(v)
 
-        self._rerun_bound_sessions()
+    def __getitem__(self, k: str) -> Any:
+        item = self._ensure_item_in_this_session(k)
 
-    def get_value(self) -> StateValueT:
-        with self._value_lock:
-            return self._value
+        try:
+            return item.get_value()
+        except ValueNotSetError:
+            raise KeyError(k)
+
+    def __delitem__(self, v: str) -> None:
+        return super().__delitem__(v)
+
+    def __contains__(self, k: object) -> bool:
+        if not isinstance(k, str):
+            return False
+
+        item = self._ensure_item_in_this_session(k)
+
+        return item._is_set
+
+    def __iter__(self) -> Iterator[str]:
+        return self._items.__iter__()
+
+    def __len__(self) -> int:
+        return self._items.__len__()
 
 
-SERVER_STATE_KEY_PREFIX = "_server_state_"
+_SERVER_STATE_KEY_ = "_server_state"
 
+server_state: ServerState
 
-def use_server_state(key: str, initial_value: StateValueT) -> ServerState[StateValueT]:
-    server = Server.get_current()
-
-    attr_name = f"{SERVER_STATE_KEY_PREFIX}{key}"
-
-    server_state: ServerState[StateValueT]
-    if not hasattr(server, attr_name):
-        server_state = ServerState(initial_value)
-        setattr(server, attr_name, server_state)
-    else:
-        server_state = getattr(server, attr_name)
-
-    server_state._setup_for_this_session()
-
-    return server_state
+_server = Server.get_current()
+if hasattr(_server, _SERVER_STATE_KEY_):
+    server_state = getattr(_server, _SERVER_STATE_KEY_)
+else:
+    server_state = ServerState()
+    setattr(_server, _SERVER_STATE_KEY_, server_state)
