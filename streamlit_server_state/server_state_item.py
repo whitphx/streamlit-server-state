@@ -28,7 +28,7 @@ class ServerStateItem(Generic[StateValueT]):
         self._bound_sessions = weakref.WeakSet()
         self._bound_sessions_lock = threading.Lock()
 
-    def _setup_for_this_session(self) -> None:
+    def setup_for_this_session(self) -> None:
         this_session_info = get_this_session_info()
         if this_session_info is None:
             raise RuntimeError(
