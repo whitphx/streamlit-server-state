@@ -16,14 +16,14 @@ class ValueNotSetError(Exception):
 class ServerStateItem(Generic[StateValueT]):
     _is_set: bool
     _value: StateValueT
-    _value_lock: threading.Lock
+    _value_lock: threading.RLock
 
     _bound_sessions: "weakref.WeakSet[ReportSession]"
     _bound_sessions_lock: threading.Lock
 
     def __init__(self) -> None:
         self._is_set = False
-        self._value_lock = threading.Lock()
+        self._value_lock = threading.RLock()
 
         self._bound_sessions = weakref.WeakSet()
         self._bound_sessions_lock = threading.Lock()
