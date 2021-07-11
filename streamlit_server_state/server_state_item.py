@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 from streamlit.report_session import ReportSession
 
-from .streamlit_session_state import get_this_session_info
+from .session_info import get_this_session_info
 
 StateValueT = TypeVar("StateValueT")
 
