@@ -4,8 +4,9 @@ from streamlit_server_state import server_state, server_state_lock
 
 
 def main():
-    if "rooms" not in server_state:
-        server_state["rooms"] = []
+    with server_state_lock["rooms"]:
+        if "rooms" not in server_state:
+            server_state["rooms"] = []
 
     rooms = server_state["rooms"]
 
@@ -25,8 +26,9 @@ def main():
         return
 
     room_key = f"room_{room}"
-    if room_key not in server_state:
-        server_state[room_key] = []
+    with server_state_lock[room_key]:
+        if room_key not in server_state:
+            server_state[room_key] = []
 
     st.header(room)
 

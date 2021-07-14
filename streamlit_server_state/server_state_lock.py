@@ -12,10 +12,7 @@ class ServerStateLock(collections.abc.Mapping):
         self._server_state = server_state
 
     def __getitem__(self, k: str) -> threading.RLock:
-        try:
-            item = self._server_state._items[k]
-        except KeyError:
-            raise KeyError(k)
+        item = self._server_state._ensure_item(k)
 
         return item._value_lock
 
