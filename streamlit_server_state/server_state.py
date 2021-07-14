@@ -38,6 +38,15 @@ class ServerState(collections.abc.MutableMapping):
     def __delitem__(self, v: str) -> None:
         return super().__delitem__(v)
 
+    def __setattr__(self, name: str, value: Any) -> None:
+        return self.__setitem__(name, value)
+
+    def __getattr__(self, k: str) -> Any:
+        return self.__getitem__(k)
+
+    def __delattr__(self, k) -> None:
+        return self.__delitem__(k)
+
     def __contains__(self, k: object) -> bool:
         if not isinstance(k, str):
             return False
