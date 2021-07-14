@@ -16,6 +16,9 @@ class ServerStateLock(collections.abc.Mapping):
 
         return item._value_lock
 
+    def __getattr__(self, k: str) -> threading.RLock:
+        return self.__getitem__(k)
+
     def __contains__(self, k: object) -> bool:
         return k in self._server_state._items
 
