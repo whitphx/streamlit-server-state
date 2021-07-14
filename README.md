@@ -1,5 +1,5 @@
 # streamlit-server-state
-A "server-wide" state shared among the sessions.
+A "server-wide" state shared across the sessions.
 
 [![Tests](https://github.com/whitphx/streamlit-server-state/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/whitphx/streamlit-server-state/actions/workflows/tests.yml?query=branch%3Amain)
 
