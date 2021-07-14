@@ -44,3 +44,6 @@ The lock object is introduced for thread-safety because the server-state is acce
 * [`app_chat.py`](./app_chat.py): A simple chat app using `streamlit-server-state`.
 * [`app_chat_rooms.py`](./app_chat_rooms.py): A simple chat app with room separation.
   [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/whitphx/streamlit-server-state/main/app_chat_rooms.py)
+
+## Resources
+* [New library: streamlit-server-state, a new way to share states among the sessions on the server (Streamlit Community)](https://discuss.streamlit.io/t/new-library-streamlit-server-state-a-new-way-to-share-states-among-the-sessions-on-the-server/14981)
