@@ -22,8 +22,9 @@ def main():
                 new_message_packet
             ]
 
-    if "chat_messages" not in server_state:
-        server_state["chat_messages"] = []
+    with server_state_lock["chat_messages"]:
+        if "chat_messages" not in server_state:
+            server_state["chat_messages"] = []
 
     st.text_input("Message", key="message_input", on_change=on_message_input)
 
