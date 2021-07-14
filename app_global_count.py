@@ -2,7 +2,9 @@ import streamlit as st
 
 from streamlit_server_state import server_state, server_state_lock
 
-if server_state_lock["count"]:
+st.title("Global Counter Example")
+
+if server_state_lock["count"]:  # Obtain a lock for the "count" state for thread-safety
     if "count" not in server_state:
         server_state.count = 0
 
