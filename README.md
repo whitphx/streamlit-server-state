@@ -19,7 +19,7 @@ from streamlit_server_state import server_state, server_state_lock
 
 st.title("Global Counter Example")
 
-if server_state_lock["count"]:  # Obtain a lock for the "count" state for thread-safety
+with server_state_lock["count"]:  # Lock the "count" state for thread-safety
     if "count" not in server_state:
         server_state.count = 0
 
@@ -34,6 +34,7 @@ if decrement:
         server_state.count -= 1
 
 st.write("Count = ", server_state.count)
+
 ```
 
 As above, the API is similar to [the built-in SessionState](https://blog.streamlit.io/session-state-for-streamlit/), except one major difference - a "lock" object.
