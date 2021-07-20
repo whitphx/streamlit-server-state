@@ -948,7 +948,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "streamlit"
-version = "0.84.1"
+version = "0.84.2"
 description = "The fastest way to build data apps in Python"
 category = "main"
 optional = false
@@ -965,7 +965,7 @@ click = ">=7.0,<8.0"
 gitpython = "*"
 numpy = "*"
 packaging = "*"
-pandas = ">=0.21.0"
+pandas = ">=0.21.0,<1.3.0"
 pillow = ">=6.2.0"
 protobuf = ">=3.6.0,<3.11 || >3.11"
 pyarrow = {version = "*", markers = "python_version < \"3.9\""}
@@ -1827,8 +1827,8 @@ smmap = [
     {file = "smmap-4.0.0.tar.gz", hash = "sha256:7e65386bd122d45405ddf795637b7f7d2b532e7e401d46bbe3fb49b9986d5182"},
 ]
 streamlit = [
-    {file = "streamlit-0.84.1-py2.py3-none-any.whl", hash = "sha256:83b52d925b29b501b901927aa4f9d5d477494cefd08d0e1ec3e749c795b9cddf"},
-    {file = "streamlit-0.84.1.tar.gz", hash = "sha256:cda3eab84ca6e1156ce6305839045e997e1dd0ef595e9546108535986dac767f"},
+    {file = "streamlit-0.84.2-py2.py3-none-any.whl", hash = "sha256:043e380160b5a5c643ff43f8fe7a4791120a26742652e1a302b88cec400babed"},
+    {file = "streamlit-0.84.2.tar.gz", hash = "sha256:3754dfb44afc0f6809ba0e4b849fe4199cb115fafbff67e5ec1450575a523e5a"},
 ]
 terminado = [
     {file = "terminado-0.10.1-py3-none-any.whl", hash = "sha256:c89ace5bffd0e7268bdcf22526830eb787fd146ff9d78691a0528386f92b9ae3"},
