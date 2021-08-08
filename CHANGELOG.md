@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Add
+- multiprocessing compatibility, #18.
 
 ## [0.2.0] - 2021-07-14
 ### Add
