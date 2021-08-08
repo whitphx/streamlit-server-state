@@ -12,6 +12,11 @@ _SERVER_STATE_LOCK_KEY_ = "_server_state_lock"
 try:
     _server = Server.get_current()
 except RuntimeError as e:
+    # NOTE: An error can be raised from the line above
+    # when the app script uses multiprocessing and `Server.get_current()` is executed
+    # in a spawned process because the server object is not initialized in that process.
+    # It's unavoidable so ignored with this try-except, then developers have to
+    # make sure not to use server-state in the spawned processes.
     logger.warning(
         "Failed to get the server object (%s). "
         "The server-state is not initialized in this process.",
