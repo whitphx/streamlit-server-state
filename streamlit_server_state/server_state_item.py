@@ -43,7 +43,7 @@ class ServerStateItem(Generic[StateValueT]):
     def _rerun_bound_sessions(self) -> None:
         with self._bound_sessions_lock:
             for session in self._bound_sessions:
-                session.request_rerun()  # HACK: XD
+                session.request_rerun(client_state=None)  # HACK: XD
 
     def set_value(self, value: StateValueT) -> None:
         with self._value_lock:

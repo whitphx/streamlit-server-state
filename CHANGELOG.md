@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fix
+- Set `client_state=None` option on `session.request_rerun()` to be compatible with streamlit>=0.87.0, #21.
 
 ## [0.3.0] - 2021-08-08
 ### Add
