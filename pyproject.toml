@@ -18,6 +18,7 @@ isort = "^5.8.0"
 flake8 = "^3.9.2"
 mypy = "^0.910"
 streamlit = ">=0.87.0"
+pytest = "^6.2.5"
 
 [tool.black]
 line-length = 88
