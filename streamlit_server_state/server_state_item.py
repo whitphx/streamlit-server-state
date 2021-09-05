@@ -47,10 +47,12 @@ class ServerStateItem(Generic[StateValueT]):
 
     def set_value(self, value: StateValueT) -> None:
         with self._value_lock:
+            changed = not self._is_set or self._value != value
             self._is_set = True
             self._value = value
 
-        self._rerun_bound_sessions()
+        if changed:
+            self._rerun_bound_sessions()
 
     def get_value(self) -> StateValueT:
         with self._value_lock:
