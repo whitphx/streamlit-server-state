@@ -3,6 +3,7 @@ import weakref
 from typing import Generic, Optional, TypeVar
 
 from streamlit.report_session import ReportSession
+
 from .hash import hash
 
 StateValueT = TypeVar("StateValueT")
