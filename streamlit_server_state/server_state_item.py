@@ -1,8 +1,9 @@
 import threading
 import weakref
-from typing import Generic, TypeVar
+from typing import Generic, Optional, TypeVar
 
 from streamlit.report_session import ReportSession
+from .hash import hash
 
 StateValueT = TypeVar("StateValueT")
 
@@ -14,6 +15,7 @@ class ValueNotSetError(Exception):
 class ServerStateItem(Generic[StateValueT]):
     _is_set: bool
     _value: StateValueT
+    _value_hash: Optional[str]
     _value_lock: threading.RLock
 
     _bound_sessions: "weakref.WeakSet[ReportSession]"
@@ -21,6 +23,7 @@ class ServerStateItem(Generic[StateValueT]):
 
     def __init__(self) -> None:
         self._is_set = False
+        self._value_hash = None
         self._value_lock = threading.RLock()
 
         self._bound_sessions = weakref.WeakSet()
@@ -36,14 +39,19 @@ class ServerStateItem(Generic[StateValueT]):
             for session in self._bound_sessions:
                 session.request_rerun(client_state=None)  # HACK: XD
 
+    def _on_set(self):
+        new_value_hash = hash(self._value)
+        if self._value_hash is None or self._value_hash != new_value_hash:
+            self._rerun_bound_sessions()
+
+        self._value_hash = new_value_hash
+
     def set_value(self, value: StateValueT) -> None:
         with self._value_lock:
-            changed = not self._is_set or self._value != value
             self._is_set = True
             self._value = value
 
-        if changed:
-            self._rerun_bound_sessions()
+        self._on_set()
 
     def get_value(self) -> StateValueT:
         with self._value_lock:
