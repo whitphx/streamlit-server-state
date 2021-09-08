@@ -4,7 +4,7 @@ from typing import Generic, Optional, TypeVar
 
 from streamlit.report_session import ReportSession
 
-from .hash import hash
+from .hash import Hash, hash
 
 StateValueT = TypeVar("StateValueT")
 
@@ -16,7 +16,7 @@ class ValueNotSetError(Exception):
 class ServerStateItem(Generic[StateValueT]):
     _is_set: bool
     _value: StateValueT
-    _value_hash: Optional[str]
+    _value_hash: Optional[Hash]
     _value_lock: threading.RLock
 
     _bound_sessions: "weakref.WeakSet[ReportSession]"
