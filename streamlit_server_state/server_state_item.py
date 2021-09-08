@@ -4,7 +4,7 @@ from typing import Generic, Optional, TypeVar
 
 from streamlit.report_session import ReportSession
 
-from .hash import Hash, hash
+from .hash import Hash, calc_hash
 
 StateValueT = TypeVar("StateValueT")
 
@@ -41,7 +41,7 @@ class ServerStateItem(Generic[StateValueT]):
                 session.request_rerun(client_state=None)  # HACK: XD
 
     def _on_set(self):
-        new_value_hash = hash(self._value)
+        new_value_hash = calc_hash(self._value)
         if self._value_hash is None or self._value_hash != new_value_hash:
             self._rerun_bound_sessions()
 
