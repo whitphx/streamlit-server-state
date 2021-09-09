@@ -5,6 +5,7 @@ from typing import Generic, Optional, TypeVar
 from streamlit.report_session import ReportSession
 
 from .hash import Hash, calc_hash
+from .proxy import ObjectProxy, is_immutable
 
 StateValueT = TypeVar("StateValueT")
 
@@ -48,6 +49,9 @@ class ServerStateItem(Generic[StateValueT]):
         self._value_hash = new_value_hash
 
     def set_value(self, value: StateValueT) -> None:
+        if not is_immutable(value):
+            value = ObjectProxy(value, self._on_set)
+
         with self._value_lock:
             self._is_set = True
             self._value = value
