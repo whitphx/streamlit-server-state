@@ -6,14 +6,14 @@ from .session_info import get_this_session_info
 
 
 class ServerState(collections.abc.MutableMapping):
-    _items: Dict[str, ServerStateItem] = {}
+    __items__: Dict[str, ServerStateItem] = {}
 
     def _ensure_item(self, k: str) -> ServerStateItem:
-        if k in self._items:
-            item = self._items[k]
+        if k in self.__items__:
+            item = self.__items__[k]
         else:
             item = ServerStateItem()
-            self._items[k] = item
+            self.__items__[k] = item
 
         return item
 
@@ -32,10 +32,16 @@ class ServerState(collections.abc.MutableMapping):
         return item
 
     def __setitem__(self, k: str, v: Any) -> None:
+        if k == "__items__":
+            raise KeyError(f'Attr name "{k}" is forbidden')
+
         item = self._ensure_item(k)
         item.set_value(v)
 
     def __getitem__(self, k: str) -> Any:
+        if k == "__items__":
+            raise KeyError(f'Attr name "{k}" is forbidden')
+
         item = self._ensure_item_in_this_session(k)
 
         try:
@@ -43,8 +49,11 @@ class ServerState(collections.abc.MutableMapping):
         except ValueNotSetError:
             raise KeyError(k)
 
-    def __delitem__(self, v: str) -> None:
-        return super().__delitem__(v)
+    def __delitem__(self, k: str) -> None:
+        if k == "__items__":
+            raise KeyError(f'Attr name "{k}" is forbidden')
+
+        return super().__delitem__(k)
 
     def __setattr__(self, name: str, value: Any) -> None:
         return self.__setitem__(name, value)
@@ -64,7 +73,7 @@ class ServerState(collections.abc.MutableMapping):
         return item._is_set
 
     def __iter__(self) -> Iterator[str]:
-        return (k for k, _ in ((k, v) for k, v in self._items.items() if v._is_set))
+        return (k for k, _ in ((k, v) for k, v in self.__items__.items() if v._is_set))
 
     def __len__(self) -> int:
-        return len([i for i in self._items.values() if i._is_set])
+        return len([i for i in self.__items__.values() if i._is_set])
