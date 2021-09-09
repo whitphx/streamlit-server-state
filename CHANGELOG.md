@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fix
+- Use `repr()` to compare objects to detect mutable objects diffs, #30
 
 ## [0.5.0] - 2021-09-06
 ### Fix

@@ -64,3 +64,21 @@ def test_bound_sessions_are_not_requested_to_rerun_when_the_set_value_is_not_cha
 
     item.set_value(42)
     session.request_rerun.assert_called_once()  # No new calls
+
+
+def test_bound_sessions_are_requested_to_rerun_when_a_same_but_mutated_object_is_set():
+    session = Mock()
+
+    item = ServerStateItem()
+    item.bind_session(session)
+
+    session.request_rerun.assert_not_called()
+
+    item.set_value({})
+    session.request_rerun.assert_has_calls([ANY])
+
+    value = item.get_value()
+    value["foo"] = 42
+
+    item.set_value(value)
+    session.request_rerun.assert_has_calls([ANY, ANY])
