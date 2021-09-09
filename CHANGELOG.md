@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.6.0] - 2021-09-09
 ### Fix
 - Use `repr()` to compare objects to detect mutable objects diffs, #30.
 - Fix an internal item key name, #33.
