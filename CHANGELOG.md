@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fix
+- Fix `server_state_lock`, #34.
+
 ## [0.6.0] - 2021-09-09
 ### Fix
 - Use `repr()` to compare objects to detect mutable objects diffs, #30.
