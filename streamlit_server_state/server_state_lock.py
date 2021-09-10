@@ -20,10 +20,10 @@ class ServerStateLock(collections.abc.Mapping):
         return self.__getitem__(k)
 
     def __contains__(self, k: object) -> bool:
-        return k in self._server_state._items
+        return k in self._server_state.__items__
 
     def __iter__(self) -> Iterator[str]:
-        return (k for k in self._server_state._items.keys())
+        return (k for k in self._server_state.__items__.keys())
 
     def __len__(self) -> int:
-        return self._server_state._items.__len__()
+        return self._server_state.__items__.__len__()
