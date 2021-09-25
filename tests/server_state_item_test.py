@@ -82,3 +82,18 @@ def test_bound_sessions_are_requested_to_rerun_when_a_same_but_mutated_object_is
 
     item.set_value(value)
     session.request_rerun.assert_has_calls([ANY, ANY])
+
+
+def test_object_mutation_triggers_rerun():
+    session = Mock()
+
+    item = ServerStateItem()
+    item.bind_session(session)
+
+    session.request_rerun.assert_not_called()
+
+    item.set_value({})
+    session.request_rerun.assert_has_calls([ANY])
+
+    item.get_value()["foo"] = 42
+    session.request_rerun.assert_has_calls([ANY, ANY])
