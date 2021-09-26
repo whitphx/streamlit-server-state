@@ -8,6 +8,11 @@ from .session_info import get_this_session_info
 class ServerState(collections.abc.MutableMapping):
     __items__: Dict[str, ServerStateItem] = {}
 
+    def _repr_html_(self):
+        # TODO: Escape to be HTML-safe as this is directly passed to
+        # TODO: st.markdown with unsafe_allow_html=True.
+        return dict(self)
+
     def _ensure_item(self, k: str) -> ServerStateItem:
         if k in self.__items__:
             item = self.__items__[k]
