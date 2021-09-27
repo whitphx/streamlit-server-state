@@ -1,10 +1,25 @@
 import threading
 import weakref
-from typing import Generic, Optional, TypeVar
+from typing import Generic, Optional, TypeVar, Union
 
-from streamlit.report_session import ReportSession
+from streamlit.report_session import ReportSession, ReportSessionState
+from streamlit.report_thread import REPORT_CONTEXT_ATTR_NAME, ReportContext
 
 from .hash import Hash, calc_hash
+
+
+def get_report_context(session: ReportSession) -> Union[ReportContext, None]:
+    # HACK: Get ReportContext from ReportSession via ReportThread
+    scriptrunner = session._scriptrunner
+    if not scriptrunner:
+        return None
+    if not scriptrunner._script_thread:
+        return None
+
+    report_thread = scriptrunner._script_thread
+    ctx: Optional[ReportContext] = getattr(report_thread, REPORT_CONTEXT_ATTR_NAME)
+    return ctx
+
 
 StateValueT = TypeVar("StateValueT")
 
@@ -38,7 +53,21 @@ class ServerStateItem(Generic[StateValueT]):
     def _rerun_bound_sessions(self) -> None:
         with self._bound_sessions_lock:
             for session in self._bound_sessions:
-                session.request_rerun(client_state=None)  # HACK: XD
+                self._rerun_session_if_possible(session)
+
+    def _rerun_session_if_possible(self, session: ReportSession) -> None:
+        ctx = get_report_context(session)
+        if ctx and not ctx._has_script_started:
+            # This case is mainly when called from inside callbacks.
+            # Callbacks are called after ctx is set and
+            # before ctx._has_script_started is set as True.
+            # Rel: https://github.com/whitphx/streamlit-server-state/issues/37
+            return
+        if session._state == ReportSessionState.SHUTDOWN_REQUESTED:
+            # This case has no meaning on rerunning and causes an error
+            # "Discarding ScriptRequest.RERUN request after shutdown".
+            return
+        session.request_rerun(client_state=None)  # HACK: XD
 
     def _on_set(self):
         new_value_hash = calc_hash(self._value)
