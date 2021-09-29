@@ -1,9 +1,22 @@
-from unittest.mock import ANY, Mock
+from unittest.mock import ANY, Mock, patch
+
+import pytest
 
 from streamlit_server_state.server_state_item import ServerStateItem
 
 
-def test_bound_sessions_are_requested_to_rerun_when_value_is_set_or_update():
+@pytest.fixture
+def patch_is_rerunnable():
+    with patch(
+        "streamlit_server_state.server_state_item.is_rerunnable"
+    ) as mock_is_rerunnable:
+        mock_is_rerunnable.return_value = True
+        yield
+
+
+def test_bound_sessions_are_requested_to_rerun_when_value_is_set_or_update(
+    patch_is_rerunnable,
+):
     session = Mock()
 
     item = ServerStateItem()
@@ -18,7 +31,7 @@ def test_bound_sessions_are_requested_to_rerun_when_value_is_set_or_update():
     session.request_rerun.assert_has_calls([ANY, ANY])
 
 
-def test_all_bound_sessions_are_requested_to_rerun():
+def test_all_bound_sessions_are_requested_to_rerun(patch_is_rerunnable):
     session1 = Mock()
     session2 = Mock()
 
@@ -38,7 +51,7 @@ def test_all_bound_sessions_are_requested_to_rerun():
     session2.request_rerun.assert_has_calls([ANY, ANY])
 
 
-def test_bound_sessions_are_not_duplicate():
+def test_bound_sessions_are_not_duplicate(patch_is_rerunnable):
     session = Mock()
 
     item = ServerStateItem()
@@ -51,7 +64,9 @@ def test_bound_sessions_are_not_duplicate():
     session.request_rerun.assert_called_once()
 
 
-def test_bound_sessions_are_not_requested_to_rerun_when_the_set_value_is_not_changed():
+def test_bound_sessions_are_not_requested_to_rerun_when_the_set_value_is_not_changed(
+    patch_is_rerunnable,
+):
     session = Mock()
 
     item = ServerStateItem()
@@ -66,7 +81,9 @@ def test_bound_sessions_are_not_requested_to_rerun_when_the_set_value_is_not_cha
     session.request_rerun.assert_called_once()  # No new calls
 
 
-def test_bound_sessions_are_requested_to_rerun_when_a_same_but_mutated_object_is_set():
+def test_bound_sessions_are_requested_to_rerun_when_a_same_but_mutated_object_is_set(
+    patch_is_rerunnable,
+):
     session = Mock()
 
     item = ServerStateItem()
