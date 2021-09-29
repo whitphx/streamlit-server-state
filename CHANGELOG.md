@@ -2,10 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+## [0.7.0] - 2021-09-30
 ### Fix
 - Fix rerunning sessions inside callbacks to work correctly, #38.
 
-## [0.7.1] - 2021-09-10
+## [0.6.1] - 2021-09-10
 ### Fix
 - Fix `server_state_lock`, #34.
 
