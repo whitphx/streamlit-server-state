@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fix
+- Fix rerunning sessions inside callbacks to work correctly, #38.
 
 ## [0.7.1] - 2021-09-10
 ### Fix
