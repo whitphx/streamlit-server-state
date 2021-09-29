@@ -57,16 +57,20 @@ class ServerStateItem(Generic[StateValueT]):
 
     def _rerun_session_if_possible(self, session: ReportSession) -> None:
         ctx = get_report_context(session)
-        if ctx and not ctx._has_script_started:
-            # This case is mainly when called from inside callbacks.
-            # Callbacks are called after ctx is set and
-            # before ctx._has_script_started is set as True.
-            # Rel: https://github.com/whitphx/streamlit-server-state/issues/37
-            return
-        if session._state == ReportSessionState.SHUTDOWN_REQUESTED:
-            # This case has no meaning on rerunning and causes an error
-            # "Discarding ScriptRequest.RERUN request after shutdown".
-            return
+        if hasattr(ctx, "_has_script_started"):
+            # `ctx._has_script_started` has been introduced since 0.84.2
+            # Ref: https://github.com/streamlit/streamlit/compare/0.84.1...0.84.2
+            # Ref: https://github.com/streamlit/streamlit/pull/3550
+            if ctx and not ctx._has_script_started:
+                # This case is mainly when called from inside callbacks.
+                # Callbacks are called after ctx is set and
+                # before ctx._has_script_started is set as True.
+                # Rel: https://github.com/whitphx/streamlit-server-state/issues/37
+                return
+            if session._state == ReportSessionState.SHUTDOWN_REQUESTED:
+                # This case has no meaning on rerunning and causes an error
+                # "Discarding ScriptRequest.RERUN request after shutdown".
+                return
         session.request_rerun(client_state=None)  # HACK: XD
 
     def _on_set(self):
