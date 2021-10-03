@@ -1,10 +1,19 @@
-from typing import Any, Union
+from typing import Any, Optional, Tuple, Union
 
-Hash = Union[str, int]
+ReprHash = Union[str, int]
+ObjDictHash = Optional[str]
+Hash = Tuple[ReprHash, ObjDictHash]
 
 
 def calc_hash(val: Any) -> Hash:
+    dict_hash: ObjDictHash = None
+    if hasattr(val, "__dict__") and isinstance(val.__dict__, dict):
+        dict_hash = repr(val.__dict__)
+
+    repr_hash: ReprHash
     try:
-        return repr(val)
+        repr_hash = repr(val)
     except Exception:
-        return id(val)
+        repr_hash = id(val)
+
+    return (repr_hash, dict_hash)
