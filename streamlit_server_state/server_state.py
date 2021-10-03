@@ -6,7 +6,15 @@ from .session_info import get_this_session_info
 
 
 class ServerState(collections.abc.MutableMapping):
+    # NOTE: This is initialized only once across all the instances of this class.
+    # It is not a problem because the instance is singleton.
+    # However, it can be in tests where multiple instances are created.
+    # So, `self.__items__.clear()` is called inside `__init__` just for tests.
     __items__: Dict[str, ServerStateItem] = {}
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.__items__.clear()
 
     def _ensure_item(self, k: str) -> ServerStateItem:
         if k in self.__items__:

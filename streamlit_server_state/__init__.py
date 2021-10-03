@@ -2,6 +2,7 @@ import logging
 
 from streamlit.server.server import Server
 
+from .rerun import make_force_rerun_bound_sessions
 from .server_state import ServerState as _ServerState
 from .server_state_lock import ServerStateLock as _ServerStateLock
 
@@ -42,4 +43,7 @@ if _server:
         setattr(_server, _SERVER_STATE_LOCK_KEY_, server_state_lock)
 
 
-__all__ = ["server_state", "server_state_lock"]
+force_rerun_bound_sessions = make_force_rerun_bound_sessions(server_state=server_state)
+
+
+__all__ = ["server_state", "server_state_lock", "force_rerun_bound_sessions"]

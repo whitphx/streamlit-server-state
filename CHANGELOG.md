@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Add
+- Add `force_rerun_bound_sessions()`, #40.
+
 ## [0.7.0] - 2021-09-30
 ### Fix
 - Fix rerunning sessions inside callbacks to work correctly, #38.
