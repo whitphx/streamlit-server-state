@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.8.0] - 2021-10-04
 ### Add
 - Add `force_rerun_bound_sessions()`, #40.
 
