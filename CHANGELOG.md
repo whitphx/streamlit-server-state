@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fix
+- `obj.__dict__` is also considered when hashing, #42.
 
 ## [0.8.0] - 2021-10-04
 ### Add
