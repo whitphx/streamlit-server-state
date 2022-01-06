@@ -118,7 +118,6 @@ python-versions = ">=3.6"
 [package.dependencies]
 appdirs = "*"
 click = ">=7.1.2"
-dataclasses = {version = ">=0.6", markers = "python_version < \"3.7\""}
 mypy-extensions = ">=0.4.3"
 pathspec = ">=0.6,<1"
 regex = ">=2020.1.8"
@@ -201,14 +200,6 @@ description = "Cross-platform colored terminal text."
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[[package]]
-name = "dataclasses"
-version = "0.8"
-description = "A backport of the dataclasses module for Python 3.6"
-category = "dev"
-optional = false
-python-versions = ">=3.6, <3.7"
 
 [[package]]
 name = "decorator"
@@ -1008,7 +999,7 @@ python-versions = ">=3.5"
 
 [[package]]
 name = "streamlit"
-version = "1.3.0"
+version = "1.3.1"
 description = "The fastest way to build data apps in Python"
 category = "main"
 optional = false
@@ -1221,8 +1212,8 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.6"
-content-hash = "51298bf3d9881677fa3c60cc9c7d907b3147d24fbaaafb1980711c24468cd4e7"
+python-versions = "^3.7"
+content-hash = "bdb24cc79fa4de17f3bc0c628568401e2fe6c604d4fabfe6fc00644276b269c1"
 
 [metadata.files]
 altair = [
@@ -1361,10 +1352,6 @@ click = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
-]
-dataclasses = [
-    {file = "dataclasses-0.8-py3-none-any.whl", hash = "sha256:0201d89fa866f68c8ebd9d08ee6ff50c0b255f8ec63a71c16fda7af82bb887bf"},
-    {file = "dataclasses-0.8.tar.gz", hash = "sha256:8479067f342acf957dc82ec415d355ab5edb7e7646b90dc6e2fd1d96ad084c97"},
 ]
 decorator = [
     {file = "decorator-5.0.9-py3-none-any.whl", hash = "sha256:6e5c199c16f7a9f0e3a61a4a54b3d27e7dad0dbdde92b944426cb20914376323"},
@@ -1964,8 +1951,8 @@ smmap = [
     {file = "smmap-4.0.0.tar.gz", hash = "sha256:7e65386bd122d45405ddf795637b7f7d2b532e7e401d46bbe3fb49b9986d5182"},
 ]
 streamlit = [
-    {file = "streamlit-1.3.0-py2.py3-none-any.whl", hash = "sha256:9a2f8515514bf6bcd460f3522046a9a822dd44a4f16ca9b369dc79a7f08e7d1a"},
-    {file = "streamlit-1.3.0.tar.gz", hash = "sha256:599a973ee0586be0bf23d6d6b2c84fcedfcf7bd8ea1725366d1fa5499258a6cd"},
+    {file = "streamlit-1.3.1-py2.py3-none-any.whl", hash = "sha256:6913559aeb788faa4ad24fcfb58f6ef8547dc0ecadbf1d684987fbb597b7f7e6"},
+    {file = "streamlit-1.3.1.tar.gz", hash = "sha256:adec7935c9cf774b9115b2456cf2f48c4f49b9f67159a97db0fe228357c1afdf"},
 ]
 terminado = [
     {file = "terminado-0.10.1-py3-none-any.whl", hash = "sha256:c89ace5bffd0e7268bdcf22526830eb787fd146ff9d78691a0528386f92b9ae3"},
