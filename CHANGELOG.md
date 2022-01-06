@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.10.0] - 2022-01-06
+### Fix
+- Internal type annotations to be compatible with streamlit>=1.3, #581.
+
 ## [0.9.0] - 2021-10-04
 ### Fix
 - `obj.__dict__` is also considered when hashing, #42.
