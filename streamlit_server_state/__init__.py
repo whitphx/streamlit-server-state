@@ -1,4 +1,5 @@
 import logging
+from typing import Union
 
 from streamlit.server.server import Server
 
@@ -10,6 +11,8 @@ logger = logging.getLogger(__name__)
 
 _SERVER_STATE_KEY_ = "_server_state"
 _SERVER_STATE_LOCK_KEY_ = "_server_state_lock"
+
+_server: Union[Server, None]
 
 try:
     _server = Server.get_current()
