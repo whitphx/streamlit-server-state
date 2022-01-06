@@ -3,12 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.11.0] - 2022-01-06
 ### Fix
 - Drop Python 3.6 support, #58.
 
 ## [0.10.0] - 2022-01-06
 ### Fix
-- Internal type annotations to be compatible with streamlit>=1.3, #581.
+- Internal type annotations to be compatible with streamlit>=1.3, #54.
 
 ## [0.9.0] - 2021-10-04
 ### Fix
