@@ -9,6 +9,7 @@ try:
         ScriptRunContext,
     )
 except ModuleNotFoundError:
+    # streamlit < 1.4
     from streamlit.report_session import (  # type: ignore
         ReportSession as AppSession,
         ReportSessionState as AppSessionState,
