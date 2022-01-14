@@ -44,7 +44,7 @@ jobs:
       run: poetry install
     - name: Install a specific version of Streamlit
       if: ${{ matrix.streamlit-version }}
-      run: pip install streamlit=="${STREAMLIT_VERSION}"
+      run: poetry run pip install streamlit=="${STREAMLIT_VERSION}"
       env:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
     - name: Lint with black, isort, and flake8
