@@ -2,27 +2,42 @@ import threading
 import weakref
 from typing import Generic, Optional, TypeVar, Union
 
-from streamlit.report_session import ReportSession, ReportSessionState
-from streamlit.report_thread import REPORT_CONTEXT_ATTR_NAME, ReportContext
+try:
+    from streamlit.app_session import AppSession, AppSessionState
+    from streamlit.script_run_context import (
+        SCRIPT_RUN_CONTEXT_ATTR_NAME,
+        ScriptRunContext,
+    )
+except ModuleNotFoundError:
+    from streamlit.report_session import (  # type: ignore
+        ReportSession as AppSession,
+        ReportSessionState as AppSessionState,
+    )
+    from streamlit.report_thread import (  # type: ignore
+        REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
+        ReportContext as ScriptRunContext,
+    )
 
 from .hash import Hash, calc_hash
 
 
-def get_report_context(session: ReportSession) -> Union[ReportContext, None]:
-    # HACK: Get ReportContext from ReportSession via ReportThread
+def get_app_context(session: AppSession) -> Union[ScriptRunContext, None]:
+    # HACK: Get ScriptRunContext from AppSession via ScriptThread
     scriptrunner = session._scriptrunner
     if not scriptrunner:
         return None
     if not scriptrunner._script_thread:
         return None
 
-    report_thread = scriptrunner._script_thread
-    ctx: Optional[ReportContext] = getattr(report_thread, REPORT_CONTEXT_ATTR_NAME)
+    script_thread = scriptrunner._script_thread
+    ctx: Optional[ScriptRunContext] = getattr(
+        script_thread, SCRIPT_RUN_CONTEXT_ATTR_NAME
+    )
     return ctx
 
 
-def is_rerunnable(session: ReportSession) -> bool:
-    ctx = get_report_context(session)
+def is_rerunnable(session: AppSession) -> bool:
+    ctx = get_app_context(session)
     if not hasattr(ctx, "_has_script_started"):
         # `ctx._has_script_started` has been introduced since 0.84.2
         # Ref: https://github.com/streamlit/streamlit/compare/0.84.1...0.84.2
@@ -35,7 +50,7 @@ def is_rerunnable(session: ReportSession) -> bool:
         # before ctx._has_script_started is set as True.
         # Rel: https://github.com/whitphx/streamlit-server-state/issues/37
         return False
-    if session._state == ReportSessionState.SHUTDOWN_REQUESTED:
+    if session._state == AppSessionState.SHUTDOWN_REQUESTED:
         # This case has no meaning on rerunning and causes an error
         # "Discarding ScriptRequest.RERUN request after shutdown".
         return False
@@ -55,7 +70,7 @@ class ServerStateItem(Generic[StateValueT]):
     _value_hash: Optional[Hash]
     _value_lock: threading.RLock
 
-    _bound_sessions: "weakref.WeakSet[ReportSession]"
+    _bound_sessions: "weakref.WeakSet[AppSession]"
     _bound_sessions_lock: threading.Lock
 
     def __init__(self) -> None:
@@ -66,7 +81,7 @@ class ServerStateItem(Generic[StateValueT]):
         self._bound_sessions = weakref.WeakSet()
         self._bound_sessions_lock = threading.Lock()
 
-    def bind_session(self, session: ReportSession) -> None:
+    def bind_session(self, session: AppSession) -> None:
         with self._bound_sessions_lock:
             if session not in self._bound_sessions:
                 self._bound_sessions.add(session)
@@ -76,7 +91,7 @@ class ServerStateItem(Generic[StateValueT]):
             for session in self._bound_sessions:
                 self._rerun_session_if_possible(session)
 
-    def _rerun_session_if_possible(self, session: ReportSession) -> None:
+    def _rerun_session_if_possible(self, session: AppSession) -> None:
         if is_rerunnable(session):
             session.request_rerun(client_state=None)  # HACK: XD
 
