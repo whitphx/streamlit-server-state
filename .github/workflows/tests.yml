@@ -40,13 +40,13 @@ jobs:
       shell: bash
       run: timeout 10s poetry run pip --version || rm -rf .venv
 
-    - name: Install dependencies
-      run: poetry install
     - name: Install a specific version of Streamlit
       if: ${{ matrix.streamlit-version }}
-      run: poetry run pip install streamlit=="${STREAMLIT_VERSION}"
+      run: poetry add -D streamlit=="${STREAMLIT_VERSION}"
       env:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
+    - name: Install dependencies
+      run: poetry install
     - name: Lint with black, isort, and flake8
       run: |
         poetry run black . --check
