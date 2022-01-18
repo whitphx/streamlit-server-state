@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fix
+- Fix `del server_state[key]` to work correctly, #71.
+
 ## [0.12.0] - 2022-01-15
 ### Fix
 - Rename internal imports to be compatible with streamlit>=1.4.0, #63.
