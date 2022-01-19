@@ -61,7 +61,7 @@ class ServerState(collections.abc.MutableMapping):
         if k == "__items__":
             raise KeyError(f'Attr name "{k}" is forbidden')
 
-        return super().__delitem__(k)
+        del self.__items__[k]
 
     def __setattr__(self, name: str, value: Any) -> None:
         return self.__setitem__(name, value)

@@ -14,3 +14,15 @@ def test_forbidden_key():
 
     with pytest.raises(KeyError):
         del state["__items__"]
+
+
+def test_delitem():
+    state = ServerState()
+
+    with pytest.raises(KeyError):
+        del state["foo"]
+
+    state["foo"] = 42
+    del state["foo"]
+    with pytest.raises(KeyError):
+        del state["foo"]
