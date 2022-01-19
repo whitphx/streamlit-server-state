@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.12.1] - 2022-01-19
 ### Fix
 - Fix `del server_state[key]` to work correctly, #71.
 
