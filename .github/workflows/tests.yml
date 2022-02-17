@@ -53,6 +53,10 @@ jobs:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
     - name: Install dependencies
       run: poetry install
+    - name: Show Python and Streamlit versions
+      run: |
+        python -V
+        streamlit version
     - name: Lint with black, isort, and flake8
       run: |
         poetry run black . --check
