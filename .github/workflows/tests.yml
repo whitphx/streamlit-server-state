@@ -56,7 +56,7 @@ jobs:
     - name: Show Python and Streamlit versions
       run: |
         python -V
-        streamlit version
+        poetry run streamlit version
     - name: Lint with black, isort, and flake8
       run: |
         poetry run black . --check
