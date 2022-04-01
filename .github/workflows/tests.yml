@@ -11,8 +11,9 @@ jobs:
 
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
         streamlit-version: [null]
         include:
           # Test with streamlit <1.4.0 and >=1.4.0. See https://github.com/whitphx/streamlit-server-state/issues/64
@@ -24,7 +25,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2.4.0
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2.3.1
+      uses: actions/setup-python@v3.1.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install poetry
@@ -36,7 +37,7 @@ jobs:
     - name: Configure poetry
       run: poetry config virtualenvs.in-project true
     - name: Set up cache
-      uses: actions/cache@v2.1.7
+      uses: actions/cache@v3.0.1
       id: cache
       with:
         path: .venv
