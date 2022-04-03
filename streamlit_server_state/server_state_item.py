@@ -15,12 +15,11 @@ except ModuleNotFoundError:
             ScriptRunContext,
         )
     except ModuleNotFoundError:
-        # isort:skip
-        from streamlit.report_thread import (
-            REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,  # type: ignore
+        from streamlit.report_thread import (  # type: ignore # isort:skip
+            REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
         )
-        from streamlit.report_thread import (
-            ReportContext as ScriptRunContext,  # type: ignore
+        from streamlit.report_thread import (  # type: ignore # isort:skip
+            ReportContext as ScriptRunContext,
         )
 
 try:
