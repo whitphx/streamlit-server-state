@@ -3,20 +3,33 @@ import weakref
 from typing import Generic, Optional, TypeVar, Union
 
 try:
-    from streamlit.app_session import AppSession, AppSessionState
-    from streamlit.script_run_context import (
+    from streamlit.scriptrunner.script_run_context import (
         SCRIPT_RUN_CONTEXT_ATTR_NAME,
         ScriptRunContext,
     )
+except ModuleNotFoundError:
+    # streamlit < 1.8
+    try:
+        from streamlit.script_run_context import (  # type: ignore
+            SCRIPT_RUN_CONTEXT_ATTR_NAME,
+            ScriptRunContext,
+        )
+    except ModuleNotFoundError:
+        # isort:skip
+        from streamlit.report_thread import (
+            REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,  # type: ignore
+        )
+        from streamlit.report_thread import (
+            ReportContext as ScriptRunContext,  # type: ignore
+        )
+
+try:
+    from streamlit.app_session import AppSession, AppSessionState
 except ModuleNotFoundError:
     # streamlit < 1.4
     from streamlit.report_session import (  # type: ignore
         ReportSession as AppSession,
         ReportSessionState as AppSessionState,
-    )
-    from streamlit.report_thread import (  # type: ignore
-        REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
-        ReportContext as ScriptRunContext,
     )
 
 from .hash import Hash, calc_hash
