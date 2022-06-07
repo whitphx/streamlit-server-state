@@ -43,7 +43,7 @@ jobs:
     - name: Configure poetry
       run: poetry config virtualenvs.in-project true
     - name: Set up cache
-      uses: actions/cache@v3.0.2
+      uses: actions/cache@v3.0.4
       id: cache
       with:
         path: .venv
