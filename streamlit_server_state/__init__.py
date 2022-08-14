@@ -1,7 +1,12 @@
 import logging
 from typing import Union
 
-from streamlit.server.server import Server
+try:
+    from streamlit.web.server.server import Server
+except ModuleNotFoundError:
+    # streamlit < 1.12.0
+    from streamlit.server.server import Server
+
 
 from .rerun import make_force_rerun_bound_sessions
 from .server_state import ServerState as _ServerState

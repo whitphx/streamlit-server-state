@@ -1,16 +1,24 @@
 try:
-    from streamlit.scriptrunner import get_script_run_ctx
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
 except ModuleNotFoundError:
-    # streamlit < 1.8
+    # streamlit < 1.12.0
     try:
-        from streamlit.script_run_context import get_script_run_ctx  # type: ignore
+        from streamlit.scriptrunner import get_script_run_ctx  # type: ignore
     except ModuleNotFoundError:
-        # streamlit < 1.4
-        from streamlit.report_thread import (  # type: ignore
-            get_report_ctx as get_script_run_ctx,
-        )
+        # streamlit < 1.8
+        try:
+            from streamlit.script_run_context import get_script_run_ctx  # type: ignore
+        except ModuleNotFoundError:
+            # streamlit < 1.4
+            from streamlit.report_thread import (  # type: ignore
+                get_report_ctx as get_script_run_ctx,
+            )
 
-from streamlit.server.server import Server
+try:
+    from streamlit.web.server.server import Server
+except ModuleNotFoundError:
+    # streamlit < 1.12.0
+    from streamlit.server.server import Server
 
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 
