@@ -1,4 +1,5 @@
 import logging
+import threading
 from typing import Union
 
 from streamlit.server.server import Server
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 _SERVER_STATE_KEY_ = "_server_state"
 _SERVER_STATE_LOCK_KEY_ = "_server_state_lock"
+_GLOBAL_LOCK_KEY_ = "_global_lock"
 
 _server: Union[Server, None]
 
@@ -30,6 +32,8 @@ except RuntimeError as e:
     _server = None
 
 server_state: _ServerState
+server_state_lock: _ServerStateLock
+global_lock: threading.RLock
 if _server:
     if hasattr(_server, _SERVER_STATE_KEY_):
         server_state = getattr(_server, _SERVER_STATE_KEY_)
@@ -37,14 +41,17 @@ if _server:
         server_state = _ServerState()
         setattr(_server, _SERVER_STATE_KEY_, server_state)
 
-server_state_lock: _ServerStateLock
-if _server:
     if hasattr(_server, _SERVER_STATE_LOCK_KEY_):
         server_state_lock = getattr(_server, _SERVER_STATE_LOCK_KEY_)
     else:
         server_state_lock = _ServerStateLock(server_state=server_state)
         setattr(_server, _SERVER_STATE_LOCK_KEY_, server_state_lock)
 
+    if hasattr(_server, _GLOBAL_LOCK_KEY_):  # Can this be exclusive?
+        global_lock = getattr(_server, _GLOBAL_LOCK_KEY_)
+    else:
+        global_lock = threading.RLock()
+        setattr(_server, _GLOBAL_LOCK_KEY_, global_lock)
 
 force_rerun_bound_sessions = make_force_rerun_bound_sessions(server_state=server_state)
 
