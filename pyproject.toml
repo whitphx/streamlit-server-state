@@ -13,11 +13,18 @@ streamlit = ">=0.65.0"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
+click = ">=7.0,<8.0"  # We must specify the click version because we install older versions of Streamlit in the CI process and their depending click version is different from the newer releases.
 isort = "^5.10.1"
 flake8 = "^4.0.1"
 mypy = "^0.942"
-streamlit = ">=0.87.0"
 pytest = "^7.1.1"
+# It is necessary to specify numpy and pandas versions for Poetry to resolve the package versions correctly and avoid errors.
+numpy = "^1.21.0"
+pandas = [
+  {version = "1.1.5", python = ">=3.7,<3.8"},
+  {version = "^1.4.0", python = ">=3.8,<3.11"},
+]
+streamlit = "1.11.1"
 
 [tool.black]
 line-length = 88
