@@ -14,11 +14,7 @@ except ModuleNotFoundError:
                 get_report_ctx as get_script_run_ctx,
             )
 
-try:
-    from streamlit.web.server.server import Server
-except ModuleNotFoundError:
-    # streamlit < 1.12.0
-    from streamlit.server.server import Server
+from .server import get_current_server
 
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 
@@ -32,7 +28,7 @@ def get_session_id() -> str:
 
 
 def get_this_session_info():
-    current_server = Server.get_current()
+    current_server = get_current_server()
 
     # The original implementation of SessionState (https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92) has a problem    # noqa: E501
     # as referred to in https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92#gistcomment-3484515,                         # noqa: E501
