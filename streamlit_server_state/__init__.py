@@ -1,5 +1,4 @@
 import logging
-from typing import Union
 
 from .rerun import make_force_rerun_bound_sessions
 from .server import get_current_server

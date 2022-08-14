@@ -22,7 +22,8 @@ def get_current_server():
 
     if is_modern_streamlit():
         logger.debug(
-            "The running Streamlit version is gte 1.12.0. Try to get the server instance"
+            "The running Streamlit version is gte 1.12.0. "
+            "Try to get the server instance"
         )
 
         import gc
@@ -41,7 +42,8 @@ def get_current_server():
         _server = servers[0]
     else:
         logger.debug(
-            "The running Streamlit version is less than 1.12.0. Call Server.get_current()"
+            "The running Streamlit version is less than 1.12.0. "
+            "Call Server.get_current()"
         )
         try:
             from streamlit.web.server.server import Server
