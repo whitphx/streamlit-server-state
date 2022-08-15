@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+## [0.14.0] - 2022-08-15
 ### Fix
 - Use `packaging` for version comparison, #132.
 
