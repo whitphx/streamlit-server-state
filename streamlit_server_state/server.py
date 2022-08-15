@@ -7,9 +7,21 @@ logger = logging.getLogger(__name__)
 _server = None
 
 
-def is_modern_streamlit() -> bool:
+def _is_modern_architecture() -> bool:
+    """Returns if the imported streamlit package version is >=1.12.0.
+    It is because since that version, streamlit has changed its internal architecture
+    making `web` and `runtime` submodules to which some files have been moved
+    decoupling the web server-related files and the core runtime,
+    e.g. https://github.com/streamlit/streamlit/pull/4956.
+
+    During this a huge refactoring, `Server._singleton` and
+    its accessor `Server.get_current()` have been removed
+    (https://github.com/streamlit/streamlit/pull/4966)
+    that we have been using as a server-wide global object,
+    so we have to change the way to access it.
+    """
     try:
-        major, minor, patch = [int(s) for s in st.__version__.split(".")]
+        major, minor = [int(s) for s in st.__version__.split(".")][:2]
         return major >= 1 and minor >= 12
     except Exception:
         return False
@@ -20,7 +32,7 @@ def get_current_server():
     if _server:
         return _server
 
-    if is_modern_streamlit():
+    if _is_modern_architecture():
         logger.debug(
             "The running Streamlit version is gte 1.12.0. "
             "Try to get the server instance"
