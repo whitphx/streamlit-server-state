@@ -3,6 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.13.0] - 2022-08-15
 ### Fix
 - Escape-hatch to access the running Streamlit server object for the new web server design with streamlit>=1.12.0, #131.
 
