@@ -1,9 +1,7 @@
 import logging
-from typing import Union
-
-from streamlit.server.server import Server
 
 from .rerun import make_force_rerun_bound_sessions
+from .server import get_current_server
 from .server_state import ServerState as _ServerState
 from .server_state_lock import ServerStateLock as _ServerStateLock
 
@@ -12,10 +10,10 @@ logger = logging.getLogger(__name__)
 _SERVER_STATE_KEY_ = "_server_state"
 _SERVER_STATE_LOCK_KEY_ = "_server_state_lock"
 
-_server: Union[Server, None]
+_server = None
 
 try:
-    _server = Server.get_current()
+    _server = get_current_server()
 except RuntimeError as e:
     # NOTE: An error can be raised from the line above
     # when the app script uses multiprocessing and `Server.get_current()` is executed
@@ -27,7 +25,6 @@ except RuntimeError as e:
         "The server-state is not initialized in this process.",
         e,
     )
-    _server = None
 
 server_state: _ServerState
 if _server:

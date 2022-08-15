@@ -3,31 +3,42 @@ import weakref
 from typing import Generic, Optional, TypeVar, Union
 
 try:
-    from streamlit.scriptrunner.script_run_context import (
+    from streamlit.runtime.scriptrunner.script_run_context import (
         SCRIPT_RUN_CONTEXT_ATTR_NAME,
         ScriptRunContext,
     )
 except ModuleNotFoundError:
-    # streamlit < 1.8
+    # streamlit < 1.12.0
     try:
-        from streamlit.script_run_context import (  # type: ignore
+        from streamlit.scriptrunner.script_run_context import (  # type: ignore
             SCRIPT_RUN_CONTEXT_ATTR_NAME,
             ScriptRunContext,
         )
     except ModuleNotFoundError:
-        from streamlit.report_thread import (  # type: ignore # isort:skip
-            REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
-            ReportContext as ScriptRunContext,
-        )
+        # streamlit < 1.8
+        try:
+            from streamlit.script_run_context import (  # type: ignore
+                SCRIPT_RUN_CONTEXT_ATTR_NAME,
+                ScriptRunContext,
+            )
+        except ModuleNotFoundError:
+            from streamlit.report_thread import (  # type: ignore # isort:skip
+                REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
+                ReportContext as ScriptRunContext,
+            )
 
 try:
-    from streamlit.app_session import AppSession, AppSessionState
+    from streamlit.runtime.app_session import AppSession, AppSessionState
 except ModuleNotFoundError:
-    # streamlit < 1.4
-    from streamlit.report_session import (  # type: ignore
-        ReportSession as AppSession,
-        ReportSessionState as AppSessionState,
-    )
+    # streamlit < 1.12.0
+    try:
+        from streamlit.app_session import AppSession, AppSessionState  # type: ignore
+    except ModuleNotFoundError:
+        # streamlit < 1.4
+        from streamlit.report_session import (  # type: ignore
+            ReportSession as AppSession,
+            ReportSessionState as AppSessionState,
+        )
 
 from .hash import Hash, calc_hash
 
