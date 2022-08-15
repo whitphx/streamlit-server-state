@@ -15,8 +15,11 @@ from streamlit_server_state.server import _is_modern_architecture
         ("1.12.0", True),
         ("1.12.1", True),
         ("1.13.0", True),
+        ("2.0.0", True),
         ("1.11", False),
+        ("1.12", True),
         ("1.13", True),
+        ("2.0", True),
         ("foo", False),
     ],
 )
