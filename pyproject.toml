@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/whitphx/streamlit-server-state"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.7,<3.11,!=3.9.7"  # 3.9.7 is excluded due to https://github.com/streamlit/streamlit/pull/5168
 streamlit = ">=0.65.0"
 packaging = ">=20.0"
 
@@ -25,7 +25,7 @@ pandas = [
   {version = "1.1.5", python = ">=3.7,<3.8"},
   {version = "^1.4.0", python = ">=3.8,<3.11"},
 ]
-streamlit = ">=0.87.0"
+streamlit = "^1.12.2"
 
 [tool.black]
 line-length = 88
