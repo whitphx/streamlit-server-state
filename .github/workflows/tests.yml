@@ -41,25 +41,31 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    # Ref: https://github.com/python-poetry/poetry/blob/ecb030e1f0b7c13cc11971f00ee5012e82a892bc/.github/workflows/main.yml#L49-L77
+    # The following steps are based on https://github.com/python-poetry/poetry/blob/601dc7896c812d39b75f2358b17a9460561d3866/.github/workflows/main.yml#L51-L79
     - name: Get full Python version
       id: full-python-version
       run: echo ::set-output name=version::$(python -c "import sys; print('-'.join(str(v) for v in sys.version_info))")
-    - name: Install poetry
+
+    - name: Bootstrap poetry
       run: |
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+        curl -sL https://install.python-poetry.org | python - -y
+
+    - name: Update PATH
+      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+
     - name: Configure poetry
-      run: poetry config virtualenvs.in-project true
+      run: poetry config virtualenvs.in-project false
+
     - name: Set up cache
-      uses: actions/cache@v3.0.8
+      uses: actions/cache@v3
       id: cache
       with:
         path: .venv
         key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
+
     - name: Ensure cache is healthy
       if: steps.cache.outputs.cache-hit == 'true'
-      run: timeout 10s poetry run pip --version || rm -rf .venv
+      run: timeout 10s pip --version || rm -rf .venv
 
     - name: Install a specific version of Streamlit
       if: ${{ matrix.streamlit-version }}
