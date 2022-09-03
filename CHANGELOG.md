@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fix
+- Catch `ReferenceError` during searching the server object , #139.
+
 ## [0.14.1] - 2022-08-27
 ### Fix
 - Compatibility with streamlit>=1.12.1, #136.
