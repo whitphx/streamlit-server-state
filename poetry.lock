@@ -798,8 +798,8 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.7,<3.11,!=3.9.7"
-content-hash = "ac37fe57cf7fbb06247a5c6af84d43cdbd4613843a7fb408737c844a9f65f7fc"
+python-versions = ">=3.7,<3.11,!=3.9.7"  # 3.9.7 is excluded due to https://github.com/streamlit/streamlit/pull/5168
+content-hash = "de295d96e881eb4119992431a66736b66b79495395170cfd8be6cc58e099537b"
 
 [metadata.files]
 altair = [
