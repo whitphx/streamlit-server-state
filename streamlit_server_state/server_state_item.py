@@ -4,6 +4,7 @@ from typing import Generic, Optional, TypeVar
 
 from .app_context import AppSession, is_rerunnable
 from .hash import Hash, calc_hash
+from .rerun_suppression import is_rerun_suppressed
 
 StateValueT = TypeVar("StateValueT")
 
@@ -45,8 +46,9 @@ class ServerStateItem(Generic[StateValueT]):
 
     def _on_set(self):
         new_value_hash = calc_hash(self._value)
-        if self._value_hash is None or self._value_hash != new_value_hash:
-            self._rerun_bound_sessions()
+        if not is_rerun_suppressed():
+            if self._value_hash is None or self._value_hash != new_value_hash:
+                self._rerun_bound_sessions()
 
         self._value_hash = new_value_hash
 

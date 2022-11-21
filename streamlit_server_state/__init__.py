@@ -1,5 +1,6 @@
 import logging
 
+from .rerun_suppression import no_rerun
 from .rerun import make_force_rerun_bound_sessions
 from .server import get_current_server
 from .server_state import ServerState as _ServerState
@@ -46,4 +47,10 @@ if _server:
 force_rerun_bound_sessions = make_force_rerun_bound_sessions(server_state=server_state)
 
 
-__all__ = ["server_state", "server_state_lock", "force_rerun_bound_sessions"]
+__all__ = [
+    "server_state",
+    "server_state_lock",
+    "force_rerun_bound_sessions",
+    "rerun_suppression",
+    "no_rerun",
+]
