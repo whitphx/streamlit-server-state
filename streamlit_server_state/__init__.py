@@ -1,7 +1,7 @@
 import logging
 
-from .rerun_suppression import no_rerun
 from .rerun import make_force_rerun_bound_sessions
+from .rerun_suppression import no_rerun
 from .server import get_current_server
 from .server_state import ServerState as _ServerState
 from .server_state_lock import ServerStateLock as _ServerStateLock
