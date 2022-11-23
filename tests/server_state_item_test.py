@@ -123,6 +123,3 @@ def test_bound_sessions_are_not_requested_to_rerun_in_no_rerun_context(
     with no_rerun:
         item.set_value(42)
     session.request_rerun.assert_not_called()
-
-    item.set_value(42)
-    session.request_rerun.assert_not_called()  # No new calls
