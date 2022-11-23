@@ -35,7 +35,11 @@ no_rerun = RerunSuppressor()
 
 
 def is_rerun_suppressed() -> bool:
-    this_session = get_this_session()
+    try:
+        this_session = get_this_session()
+    except RuntimeError:
+        return False
+
     ctx = get_app_context(this_session)
 
     rerun_suppressed = getattr(ctx, _SERVER_STATE_RERUN_SUPPRESSION_ATTR_NAME_, False)
