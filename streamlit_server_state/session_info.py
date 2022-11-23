@@ -10,6 +10,17 @@ except ModuleNotFoundError:
         # streamlit < 1.12.0
         from streamlit.server.server import SessionInfo  # type: ignore
 
+
+try:
+    from streamlit.runtime.app_session import AppSession
+except ModuleNotFoundError:
+    # streamlit < 1.12.0
+    try:
+        from streamlit.app_session import AppSession  # type: ignore
+    except ModuleNotFoundError:
+        # streamlit < 1.4
+        from streamlit.report_session import ReportSession as AppSession  # type: ignore
+
 try:
     from streamlit.runtime.scriptrunner import get_script_run_ctx
 except ModuleNotFoundError:
@@ -54,3 +65,13 @@ def get_this_session_info() -> Optional[SessionInfo]:
         session_info = current_server._get_session_info(session_id)
 
     return session_info
+
+
+def get_this_session() -> AppSession:
+    this_session_info = get_this_session_info()
+    if this_session_info is None:
+        raise RuntimeError(
+            "Oh noes. Couldn't get your Streamlit Session object. "
+            "Are you doing something fancy with threads?"
+        )
+    return this_session_info.session

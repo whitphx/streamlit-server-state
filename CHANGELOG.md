@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Add
+- The `no_rerun` context manager to suppress re-running the app upon value assignment, #155.
+
 ## [0.14.2] - 2022-09-04
 ### Fix
 - Catch `ReferenceError` during searching the server object , #139.

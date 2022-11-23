@@ -2,7 +2,7 @@ import collections.abc
 from typing import Any, Dict, Iterator
 
 from .server_state_item import ServerStateItem, ValueNotSetError
-from .session_info import get_this_session_info
+from .session_info import get_this_session
 
 
 class ServerState(collections.abc.MutableMapping):
@@ -28,13 +28,8 @@ class ServerState(collections.abc.MutableMapping):
     def _ensure_item_in_this_session(self, k: str) -> ServerStateItem:
         item = self._ensure_item(k)
 
-        this_session_info = get_this_session_info()
-        if this_session_info is None:
-            raise RuntimeError(
-                "Oh noes. Couldn't get your Streamlit Session object. "
-                "Are you doing something fancy with threads?"
-            )
-        this_session = this_session_info.session
+        this_session = get_this_session()
+
         item.bind_session(this_session)
 
         return item
