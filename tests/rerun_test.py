@@ -11,7 +11,7 @@ from streamlit_server_state.server_state import ServerState
 
 
 @pytest.fixture
-def patch_is_rerunnable():
+def patched_is_rerunnable():
     with patch(
         "streamlit_server_state.server_state_item.is_rerunnable"
     ) as mock_is_rerunnable:
@@ -30,7 +30,7 @@ def patched_this_session():
 
 
 def test_bound_sessions_are_requested_to_rerun_by_force_rerun_bound_sessions(
-    patch_is_rerunnable, patched_this_session
+    patched_is_rerunnable, patched_this_session
 ):
     server_state = ServerState()
     force_rerun_bound_sessions = make_force_rerun_bound_sessions(server_state)
@@ -54,7 +54,7 @@ def test_bound_sessions_are_requested_to_rerun_by_force_rerun_bound_sessions(
 
 
 def test_force_rerun_bound_sessions_raises_an_error_in_no_rerun_context(
-    patch_is_rerunnable, patched_this_session
+    patched_is_rerunnable, patched_this_session
 ):
     server_state = ServerState()
     force_rerun_bound_sessions = make_force_rerun_bound_sessions(server_state)
