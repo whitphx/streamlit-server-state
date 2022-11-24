@@ -24,6 +24,22 @@ except ModuleNotFoundError:
             )
 
 try:
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+except ModuleNotFoundError:
+    # streamlit < 1.12.0
+    try:
+        from streamlit.scriptrunner import get_script_run_ctx  # type: ignore
+    except ModuleNotFoundError:
+        # streamlit < 1.8
+        try:
+            from streamlit.script_run_context import get_script_run_ctx  # type: ignore
+        except ModuleNotFoundError:
+            # streamlit < 1.4
+            from streamlit.report_thread import (  # type: ignore # isort:skip
+                get_report_ctx as get_script_run_ctx,
+            )
+
+try:
     from streamlit.runtime.app_session import AppSession, AppSessionState
 except ModuleNotFoundError:
     # streamlit < 1.12.0
@@ -47,28 +63,11 @@ except ModuleNotFoundError:
         from streamlit.server.server import SessionInfo  # type: ignore
 
 
-try:
-    from streamlit.runtime.scriptrunner import get_script_run_ctx
-except ModuleNotFoundError:
-    # streamlit < 1.12.0
-    try:
-        from streamlit.scriptrunner import get_script_run_ctx  # type: ignore
-    except ModuleNotFoundError:
-        # streamlit < 1.8
-        try:
-            from streamlit.script_run_context import get_script_run_ctx  # type: ignore
-        except ModuleNotFoundError:
-            # streamlit < 1.4
-            from streamlit.report_thread import (  # type: ignore # isort:skip
-                get_report_ctx as get_script_run_ctx,
-            )
-
-
 __all__ = [
     "SCRIPT_RUN_CONTEXT_ATTR_NAME",
     "ScriptRunContext",
+    "get_script_run_ctx",
     "AppSession",
     "AppSessionState",
     "SessionInfo",
-    "get_script_run_ctx",
 ]
