@@ -59,8 +59,8 @@ except ModuleNotFoundError:
             from streamlit.script_run_context import get_script_run_ctx  # type: ignore
         except ModuleNotFoundError:
             # streamlit < 1.4
-            from streamlit.report_thread import (
-                get_report_ctx as get_script_run_ctx,  # type: ignore
+            from streamlit.report_thread import (  # type: ignore # isort:skip
+                get_report_ctx as get_script_run_ctx,
             )
 
 
