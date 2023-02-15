@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.15.1] - 2023-02-16
+### Fix
+- Compatibility with streamlit>=1.18.0, #172, #175.
+- Refactoring the sample chat apps, #174.
+
 ## [0.15.0] - 2022-11-24
 ### Add
 - The `no_rerun` context manager to suppress re-running the app upon value assignment, #155.
