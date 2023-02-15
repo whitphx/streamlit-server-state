@@ -3,7 +3,6 @@ from typing import Optional
 from ._compat import AppSession, SessionInfo, get_script_run_ctx
 from .server import VER_GTE_1_12_1, VER_GTE_1_17_0, get_current_server
 
-
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 
 

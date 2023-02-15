@@ -55,7 +55,9 @@ def get_current_server():
         def is_server(obj) -> bool:
             try:
                 return isinstance(obj, Server)
-            except ReferenceError:  # This is necessary due to https://github.com/whitphx/streamlit-webrtc/issues/1040  # noqa: E501
+            except (
+                ReferenceError
+            ):  # This is necessary due to https://github.com/whitphx/streamlit-webrtc/issues/1040  # noqa: E501
                 return False
 
         servers = [obj for obj in gc.get_objects() if is_server(obj)]
