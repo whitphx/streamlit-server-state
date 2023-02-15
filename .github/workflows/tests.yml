@@ -33,6 +33,12 @@ jobs:
           # Test with streamlit >=1.12.1. See https://github.com/whitphx/streamlit-server-state/issues/135
           - python-version: 3.9
             streamlit-version: 1.12.1
+          # Test with streamlit >=1.14.0. See https://github.com/whitphx/streamlit-server-state/pull/175
+          - python-version: 3.9
+            streamlit-version: 1.14.0
+          # Test with streamlit >=1.18.0. See https://github.com/whitphx/streamlit-server-state/issues/171
+          - python-version: 3.9
+            streamlit-version: 1.18.0
 
     steps:
     - uses: actions/checkout@v3
