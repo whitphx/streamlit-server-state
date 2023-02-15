@@ -1,7 +1,14 @@
 from typing import Optional
 
-from ._compat import AppSession, SessionInfo, get_script_run_ctx
-from .server import VER_GTE_1_12_1, VER_GTE_1_17_0, get_current_server
+from ._compat import (
+    VER_GTE_1_12_1,
+    VER_GTE_1_14_0,
+    VER_GTE_1_18_0,
+    AppSession,
+    SessionInfo,
+    get_script_run_ctx,
+)
+from .server import get_current_server
 
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 
@@ -15,18 +22,27 @@ def get_session_id() -> str:
 
 
 def get_this_session_info() -> Optional[SessionInfo]:
-    current_server = get_current_server()
-
     # The original implementation of SessionState (https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92) has a problem    # noqa: E501
     # as referred to in https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92#gistcomment-3484515,                         # noqa: E501
     # then fixed here.
     # This code only works with streamlit>=0.65, https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92#gistcomment-3418729 # noqa: E501
     session_id = get_session_id()
-    if VER_GTE_1_17_0:
-        session_info = current_server._runtime._session_mgr.get_session_info(session_id)
-    elif VER_GTE_1_12_1:
+
+    if VER_GTE_1_18_0:
+        from streamlit.runtime.runtime import Runtime
+
+        return Runtime.instance()._session_mgr.get_active_session_info(session_id)  # type: ignore  # noqa: E501
+    elif VER_GTE_1_14_0:
+        from streamlit.runtime.runtime import Runtime
+
+        return Runtime.instance()._get_session_info(session_id)  # type: ignore  # noqa: E501
+
+    current_server = get_current_server()
+
+    if VER_GTE_1_12_1:
         session_info = current_server._runtime._get_session_info(session_id)
     else:
+        # streamlit < 1.12.1
         session_info = current_server._get_session_info(session_id)
 
     return session_info
