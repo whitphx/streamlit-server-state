@@ -53,15 +53,18 @@ except ModuleNotFoundError:
         )
 
 try:
-    from streamlit.runtime.runtime import SessionInfo
+    from streamlit.runtime.session_manager import SessionInfo
 except ModuleNotFoundError:
-    # streamlit < 1.12.1
+    # streamlit < 1.17.0
     try:
-        from streamlit.web.server.server import SessionInfo  # type: ignore
+        from streamlit.runtime.runtime import SessionInfo  # type: ignore
     except ModuleNotFoundError:
-        # streamlit < 1.12.0
-        from streamlit.server.server import SessionInfo  # type: ignore
-
+        # streamlit < 1.12.1
+        try:
+            from streamlit.web.server.server import SessionInfo  # type: ignore
+        except ModuleNotFoundError:
+            # streamlit < 1.12.0
+            from streamlit.server.server import SessionInfo  # type: ignore
 
 __all__ = [
     "SCRIPT_RUN_CONTEXT_ATTR_NAME",

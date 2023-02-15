@@ -1,7 +1,7 @@
 from typing import Optional
 
 from ._compat import AppSession, SessionInfo, get_script_run_ctx
-from .server import VER_GTE_1_12_1, get_current_server
+from .server import VER_GTE_1_12_1, VER_GTE_1_17_0, get_current_server
 
 # Ref: https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92
 
@@ -22,8 +22,9 @@ def get_this_session_info() -> Optional[SessionInfo]:
     # then fixed here.
     # This code only works with streamlit>=0.65, https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92#gistcomment-3418729 # noqa: E501
     session_id = get_session_id()
-
-    if VER_GTE_1_12_1:
+    if VER_GTE_1_17_0:
+        session_info = current_server._runtime._session_mgr.get_session_info(session_id)
+    elif VER_GTE_1_12_1:
         session_info = current_server._runtime._get_session_info(session_id)
     else:
         session_info = current_server._get_session_info(session_id)

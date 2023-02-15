@@ -11,6 +11,7 @@ ST_VERSION = version.parse(st.__version__)
 
 VERSION_1_12_0 = version.parse("1.12.0")
 VERSION_1_12_1 = version.parse("1.12.1")
+VERSION_1_17_0 = version.parse("1.17.0")
 
 VER_GTE_1_12_0 = ST_VERSION >= VERSION_1_12_0
 """ Since 1.12.0, Streamlit has changed its internal architecture
@@ -33,6 +34,8 @@ has moved to the `runtime` submodule.
 Ref: https://github.com/streamlit/streamlit/pull/5136
 """
 
+VER_GTE_1_17_0 = ST_VERSION >= VERSION_1_17_0
+
 
 def get_current_server():
     global _server
@@ -52,7 +55,9 @@ def get_current_server():
         def is_server(obj) -> bool:
             try:
                 return isinstance(obj, Server)
-            except ReferenceError:  # This is necessary due to https://github.com/whitphx/streamlit-webrtc/issues/1040  # noqa: E501
+            except (
+                ReferenceError
+            ):  # This is necessary due to https://github.com/whitphx/streamlit-webrtc/issues/1040  # noqa: E501
                 return False
 
         servers = [obj for obj in gc.get_objects() if is_server(obj)]
