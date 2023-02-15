@@ -53,6 +53,9 @@ def get_current_server():
             # streamlit < 1.12.0
             from streamlit.server.server import Server
 
-        _server = Server.get_current()
+        try:
+            _server = Server.get_current()
+        except RuntimeError as e:
+            raise NoServerError(*e.args)
 
     return _server
