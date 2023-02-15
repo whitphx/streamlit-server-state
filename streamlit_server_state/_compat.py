@@ -57,7 +57,7 @@ try:
 except ModuleNotFoundError:
     # streamlit < 1.17.0
     try:
-        from streamlit.runtime.runtime import SessionInfo
+        from streamlit.runtime.runtime import SessionInfo  # type: ignore
     except ModuleNotFoundError:
         # streamlit < 1.12.1
         try:
