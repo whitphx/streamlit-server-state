@@ -7,6 +7,10 @@ logger = logging.getLogger(__name__)
 _server = None
 
 
+class NoServerError(Exception):
+    pass
+
+
 def get_current_server():
     global _server
     if _server:
@@ -31,7 +35,7 @@ def get_current_server():
         servers = [obj for obj in gc.get_objects() if is_server(obj)]
 
         if len(servers) == 0:
-            raise RuntimeError("Unexpectedly no server exists")
+            raise NoServerError("Unexpectedly no server exists")
         if len(servers) > 1:
             logger.warning(
                 "Unexpectedly multiple server instances exist. Use the first one."
@@ -49,6 +53,9 @@ def get_current_server():
             # streamlit < 1.12.0
             from streamlit.server.server import Server
 
-        _server = Server.get_current()
+        try:
+            _server = Server.get_current()
+        except RuntimeError as e:
+            raise NoServerError(*e.args)
 
     return _server

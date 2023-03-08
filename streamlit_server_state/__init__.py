@@ -2,7 +2,7 @@ import logging
 
 from .rerun import make_force_rerun_bound_sessions
 from .rerun_suppression import no_rerun
-from .server import get_current_server
+from .server import NoServerError, get_current_server
 from .server_state import ServerState as _ServerState
 from .server_state_lock import ServerStateLock as _ServerStateLock
 
@@ -15,7 +15,7 @@ _server = None
 
 try:
     _server = get_current_server()
-except RuntimeError as e:
+except NoServerError as e:
     # NOTE: An error can be raised from the line above
     # when the app script uses multiprocessing and `Server.get_current()` is executed
     # in a spawned process because the server object is not initialized in that process.

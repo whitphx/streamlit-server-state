@@ -1,7 +1,7 @@
 import logging
 
 from .app_context import get_app_context
-from .session_info import get_this_session
+from .session_info import NoSessionError, get_this_session
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ no_rerun = RerunSuppressor()
 def is_rerun_suppressed() -> bool:
     try:
         this_session = get_this_session()
-    except RuntimeError:
+    except NoSessionError:
         return False
 
     ctx = get_app_context(this_session)
