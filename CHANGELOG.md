@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.16.0] - 2023-03-08
+### Fix
+- Introduce customized error classes, #176.
+
 ## [0.15.2] - 2023-02-16
 ### Fix
 - Compatibility with streamlit>=1.18.0, #172, #175.
