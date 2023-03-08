@@ -19,7 +19,7 @@ click = ">=7.0,<8.0"  # We must specify the click version because we install old
 isort = "^5.11.5"
 flake8 = "^4.0.1"
 mypy = "^1.1"
-pytest = "^7.2.1"
+pytest = "^7.2.2"
 # It is necessary to specify numpy and pandas versions for Poetry to resolve the package versions correctly and avoid errors.
 numpy = "^1.21.0"
 pandas = [
