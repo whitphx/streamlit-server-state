@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.16.1] - 2023-06-17
+### Fix
+- Support Python 3.11, #188.
+
 ## [0.16.0] - 2023-03-08
 ### Fix
 - Introduce customized error classes, #176.
