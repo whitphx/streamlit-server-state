@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/whitphx/streamlit-server-state"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.12,!=3.9.7"  # 3.9.7 is excluded due to https://github.com/streamlit/streamlit/pull/5168
+python = ">=3.7,<4,!=3.9.7"  # 3.9.7 is excluded due to https://github.com/streamlit/streamlit/pull/5168
 streamlit = ">=0.65.0"
 packaging = ">=20.0"
 
