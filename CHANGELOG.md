@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.17.1] - 2023-08-21
+### Fix
+- Fix `get_session_info` to use `SessionManager.get_session_info()` instead of `.get_active_session_info()` because the session info sometimes can be inactive when accessed from this library, #202.
+
 ## [0.17.0] - 2023-08-20
 ### CHANGE
 - Drop Python 3.7 support, #199.
