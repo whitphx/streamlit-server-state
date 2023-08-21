@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "streamlit-server-state"
-version = "0.17.0"
+version = "0.17.1"
 description = ""
 authors = ["Yuichiro Tachibana (Tsuchiya) <t.yic.yt@gmail.com>"]
 license = "MIT"
