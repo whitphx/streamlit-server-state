@@ -49,7 +49,7 @@ try:
 except ModuleNotFoundError:
     # streamlit < 1.38.0
     try:
-        from streamlit.runtime.scriptrunner.script_run_context import (
+        from streamlit.runtime.scriptrunner.script_run_context import (  # type: ignore
             SCRIPT_RUN_CONTEXT_ATTR_NAME,
             ScriptRunContext,
         )
