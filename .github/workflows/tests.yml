@@ -62,8 +62,8 @@ jobs:
     - name: Install a specific version of Streamlit
       if: ${{ matrix.streamlit-version }}
       run: |
-        uv pip uninstall streamlit
-        uv pip install streamlit=="${STREAMLIT_VERSION}"
+        uv remove streamlit
+        uv add streamlit=="${STREAMLIT_VERSION}"
       env:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
     - name: Show Python and Streamlit versions
