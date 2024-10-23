@@ -40,9 +40,8 @@ to abstract and improve the session behavior.
 Ref: https://github.com/streamlit/streamlit/pull/5856
 """
 
-
 try:
-    from streamlit.runtime.scriptrunner.script_run_context import (
+    from streamlit.runtime.scriptrunner_utils.script_run_context import (
         SCRIPT_RUN_CONTEXT_ATTR_NAME,
         ScriptRunContext,
     )
