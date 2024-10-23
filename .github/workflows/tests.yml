@@ -39,6 +39,9 @@ jobs:
           # Test with streamlit >=1.18.0. See https://github.com/whitphx/streamlit-server-state/issues/171
           - python-version: 3.9
             streamlit-version: 1.18.0
+          # Test with streamlit >=1.38.0. See https://github.com/whitphx/streamlit-server-state/pull/232
+          - python-version: 3.9
+            streamlit-version: 1.38.0
 
     steps:
     - uses: actions/checkout@v4
