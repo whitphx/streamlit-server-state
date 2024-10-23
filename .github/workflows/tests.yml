@@ -66,10 +66,10 @@ jobs:
         uv pip install streamlit=="${STREAMLIT_VERSION}"
       env:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
-    - name: Show Python and Streamlit versions
-      run: |
-        python -V
-        uv run streamlit version
+    # - name: Show Python and Streamlit versions
+    #   run: |
+    #     python -V
+    #     uv run streamlit version
     - name: Run Ruff
       run: |
         uv run ruff check --output-format=github .
