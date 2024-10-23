@@ -19,7 +19,6 @@ build-backend = "hatchling.build"
 
 [tool.uv]
 dev-dependencies = [
-    "click>=7.0,<8.0",  # We must specify the click version because we install older versions of Streamlit in the CI process and their depending click version is different from the newer releases.
     "mypy>=1.13.0",
     "pytest>=8.3.3",
     "ruff>=0.7.0",
