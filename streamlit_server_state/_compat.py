@@ -40,30 +40,38 @@ to abstract and improve the session behavior.
 Ref: https://github.com/streamlit/streamlit/pull/5856
 """
 
+
 try:
     from streamlit.runtime.scriptrunner_utils.script_run_context import (
         SCRIPT_RUN_CONTEXT_ATTR_NAME,
         ScriptRunContext,
     )
 except ModuleNotFoundError:
-    # streamlit < 1.12.0
+    # streamlit < 1.38.0
     try:
-        from streamlit.scriptrunner.script_run_context import (  # type: ignore
+        from streamlit.runtime.scriptrunner.script_run_context import (
             SCRIPT_RUN_CONTEXT_ATTR_NAME,
             ScriptRunContext,
         )
     except ModuleNotFoundError:
-        # streamlit < 1.8
+        # streamlit < 1.12.0
         try:
-            from streamlit.script_run_context import (  # type: ignore
+            from streamlit.scriptrunner.script_run_context import (  # type: ignore
                 SCRIPT_RUN_CONTEXT_ATTR_NAME,
                 ScriptRunContext,
             )
         except ModuleNotFoundError:
-            from streamlit.report_thread import (  # type: ignore # isort:skip
-                REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
-                ReportContext as ScriptRunContext,
-            )
+            # streamlit < 1.8
+            try:
+                from streamlit.script_run_context import (  # type: ignore
+                    SCRIPT_RUN_CONTEXT_ATTR_NAME,
+                    ScriptRunContext,
+                )
+            except ModuleNotFoundError:
+                from streamlit.report_thread import (  # type: ignore # isort:skip
+                    REPORT_CONTEXT_ATTR_NAME as SCRIPT_RUN_CONTEXT_ATTR_NAME,
+                    ReportContext as ScriptRunContext,
+                )
 
 try:
     from streamlit.runtime.scriptrunner import get_script_run_ctx
