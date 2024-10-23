@@ -56,15 +56,16 @@ jobs:
         version: "latest"
         enable-cache: true
 
+    - name: Install dependencies
+      run: uv sync
+
     - name: Install a specific version of Streamlit
       if: ${{ matrix.streamlit-version }}
       run: |
-        uv remove streamlit
-        uv add streamlit=="${STREAMLIT_VERSION}"
+        uv pip uninstall streamlit
+        uv pip install streamlit=="${STREAMLIT_VERSION}"
       env:
         STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
-    - name: Install dependencies
-      run: uv sync
     - name: Show Python and Streamlit versions
       run: |
         python -V
