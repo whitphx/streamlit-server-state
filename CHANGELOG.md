@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.18.0] - 2024-10-24
+### Change
+- Support Streamlit>=1.38.0, #233.
+- Drop Python 3.8 support, #233.
+
 ## [0.17.1] - 2023-08-21
 ### Fix
 - Fix `get_session_info` to use `SessionManager.get_session_info()` instead of `.get_active_session_info()` because the session info sometimes can be inactive when accessed from this library, #202.
