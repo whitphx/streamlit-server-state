@@ -6,7 +6,7 @@ with server_state_lock["rooms"]:
     if "rooms" not in server_state:
         server_state["rooms"] = []
 
-rooms = server_state["rooms"]
+rooms: list[str] = server_state["rooms"]
 
 room = st.sidebar.radio("Select room", rooms)
 
