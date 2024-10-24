@@ -15,15 +15,17 @@ jobs:
       uses: actions/setup-python@v5.0.0
       with:
         python-version: '3.8'
-    - name: Bootstrap poetry
-      run: |
-        curl -sL https://install.python-poetry.org | python - -y
-    - name: Update PATH
-      run: echo "$HOME/.local/bin" >> $GITHUB_PATH
-    - name: Install Python dependencies
-      run: poetry install
-    - name: Build and publish
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+        enable-cache: true
+    - name: Install dependencies
+      run: uv sync
+    - name: Build
+      run: uv build
+    - name: Publish
       env:
-        PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+        UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
       run: |
-        poetry publish --build -u __token__ -p ${PYPI_TOKEN}
+        uv publish

@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.18.2] - 2024-10-24
+### Fix
+- Packaging pipeline update.
+
+## [0.18.1]
+Skipped
+
 ## [0.18.0] - 2024-10-24
 ### Change
 - Support Streamlit>=1.38.0, #233.
