@@ -69,7 +69,7 @@ jobs:
     - name: Show Python and Streamlit versions
       run: |
         python -V
-        uv run streamlit version
+        python -c "import streamlit; print(streamlit.__version__)"
     - name: Run Ruff
       run: |
         uv run ruff check --output-format=github .
