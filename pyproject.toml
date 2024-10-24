@@ -26,6 +26,7 @@ dev-dependencies = [
     "altair<5",
     # For testing older versions of Streamlit: https://discuss.streamlit.io/t/streamlit-run-with-protobuf-error/25632/3
     "protobuf<=3.20",
+    # For testing older versions of Streamlit
     "setuptools>=75.2.0",
 ]
 
