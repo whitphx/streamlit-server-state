@@ -21,9 +21,12 @@ def patched_is_rerunnable():
 
 @pytest.fixture
 def patched_this_session():
-    with patch("streamlit_server_state.session_info.get_this_session_info"), patch(
-        "streamlit_server_state.server_state.get_this_session"
-    ) as patched_get_this_session:
+    with (
+        patch("streamlit_server_state.session_info.get_this_session_info"),
+        patch(
+            "streamlit_server_state.server_state.get_this_session"
+        ) as patched_get_this_session,
+    ):
         this_session_mock = Mock()
         patched_get_this_session.return_value = this_session_mock
         yield this_session_mock

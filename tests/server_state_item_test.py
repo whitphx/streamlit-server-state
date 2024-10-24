@@ -17,8 +17,9 @@ def patch_is_rerunnable():
 
 @pytest.fixture
 def patch_get_this_session():
-    with patch("streamlit_server_state.session_info.get_this_session"), patch(
-        "streamlit_server_state.session_info.get_this_session_info"
+    with (
+        patch("streamlit_server_state.session_info.get_this_session"),
+        patch("streamlit_server_state.session_info.get_this_session_info"),
     ):
         yield
 
