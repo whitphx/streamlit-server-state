@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.8'
     - name: Install the latest version of uv
-      uses: astral-sh/setup-uv@v3
+      uses: astral-sh/setup-uv@v5
       with:
         version: "latest"
         enable-cache: true
