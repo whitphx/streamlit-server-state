@@ -1,6 +1,8 @@
 import collections.abc
 from typing import Any, Dict, Iterator
 
+from streamlit.runtime.scriptrunner_utils.script_run_context import get_script_run_ctx
+
 from .server_state_item import ServerStateItem, ValueNotSetError
 from .session_info import get_this_session
 
@@ -11,6 +13,7 @@ class ServerState(collections.abc.MutableMapping):
     # However, it can be in tests where multiple instances are created.
     # So, `self.__items__.clear()` is called inside `__init__` just for tests.
     __items__: Dict[str, ServerStateItem] = {}
+    _fragments: Dict[str, Dict[str, str]] = {}
 
     def __init__(self) -> None:
         super().__init__()
@@ -34,12 +37,24 @@ class ServerState(collections.abc.MutableMapping):
 
         return item
 
+    def register_current_fragment_rerun(self, for_updates_to: str) -> None:
+        ctx = get_script_run_ctx()
+        this_session = get_this_session()
+        if for_updates_to not in self._fragments:
+            self._fragments[for_updates_to] = {this_session.id: ctx.current_fragment_id}
+        else:
+            self._fragments[for_updates_to][this_session.id] = ctx.current_fragment_id
+
     def __setitem__(self, k: str, v: Any) -> None:
         if k == "__items__":
             raise KeyError(f'Attr name "{k}" is forbidden')
 
+        this_session = get_this_session()
         item = self._ensure_item(k)
-        item.set_value(v)
+        if k in self._fragments:
+            item.set_value(value=v, setting_session=this_session, refresh_fragments=self._fragments[k])
+        else:
+            item.set_value(value=v, setting_session=this_session, refresh_fragments=None)
 
     def __getitem__(self, k: str) -> Any:
         if k == "__items__":
