@@ -78,9 +78,9 @@ Background: https://discuss.streamlit.io/t/new-library-streamlit-server-state-a-
 
 ## Examples
 * [`app_global_count`](./app_global_count.py): A sample app like [the official counter example for SessionState](https://blog.streamlit.io/session-state-for-streamlit/) which uses `streamlit-server-state` instead and the counter is shared among all the sessions on the server. This is a nice small example to see the usage and behavior of `streamlit-server-state`. Try to open the app in multiple browser tabs and see the counter is shared among them.
-* [`app_global_slider`](./app_global_slider.py): A slider widget (`st.slider`) whose value is shared among all sessions.
-* [`app_chat.py`](./app_chat.py): A simple chat app using `streamlit-server-state`.
-* [`app_chat_rooms.py`](./app_chat_rooms.py): A simple chat app with room separation.
+* [`app_global_slider`](./pages/app_global_slider.py): A slider widget (`st.slider`) whose value is shared among all sessions.
+* [`app_chat.py`](./pages/app_chat.py): A simple chat app using `streamlit-server-state`.
+* [`app_chat_rooms.py`](./pages/app_chat_rooms.py): A simple chat app with room separation.
   [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/whitphx/streamlit-server-state/main/app_chat_rooms.py)
 
 ## Resources
