@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.19.0] - 2025-03-25
+### Changed
+- Rerun with the correct client state, #240.
+
 ## [0.18.2] - 2024-10-24
 ### Fix
 - Packaging pipeline update.
