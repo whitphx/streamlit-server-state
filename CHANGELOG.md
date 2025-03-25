@@ -3,10 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.20.0] - 2025-03-25
+## [0.20.1] - 2025-03-25
 ### Changed
 - Set the version dynamically by hatch-vcs, #242.
 - Update the CI/CD pipeline to use Trusted Publisher on PyPI, #242.
+
+## [0.20.0] - 2025-03-25
+Skipped
 
 ## [0.19.0] - 2025-03-25
 ### Changed
