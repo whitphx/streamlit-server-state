@@ -36,6 +36,7 @@ dev-dependencies = [
     "setuptools>=75.2.0",
     "bump-my-version>=0.28.0",
     "hatch-vcs>=0.4.0",
+    "pre-commit>=4.2.0",
 ]
 
 [tool.ruff.lint]
