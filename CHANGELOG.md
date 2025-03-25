@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.20.2] - 2025-03-25
+### Fixed
+- Internal dependencies updates.
+
 ## [0.20.1] - 2025-03-25
 ### Changed
 - Set the version dynamically by hatch-vcs, #242.
