@@ -42,7 +42,7 @@ class ServerStateItem(Generic[StateValueT]):
 
     def _rerun_session_if_possible(self, session: AppSession) -> None:
         if is_rerunnable(session):
-            session.request_rerun(client_state=None)  # HACK: XD
+            session.request_rerun(client_state=session._client_state)  # HACK: XD
 
     def _on_set(self):
         new_value_hash = calc_hash(self._value)
