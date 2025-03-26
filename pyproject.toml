@@ -25,7 +25,7 @@ source = "vcs"
 
 [tool.uv]
 dev-dependencies = [
-    "mypy>=1.13.0",
+    "mypy[faster-cache]>=1.15.0",
     "pytest>=8.3.3",
     "ruff>=0.7.0",
     # For testing older versions of Streamlit: https://discuss.streamlit.io/t/modulenotfounderror-no-module-named-altair-vegalite-v4/42921
