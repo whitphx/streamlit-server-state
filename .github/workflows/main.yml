@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         streamlit-version: [null]
         include:
           # Test with streamlit <1.4.0 and >=1.4.0. See https://github.com/whitphx/streamlit-server-state/issues/64
@@ -80,12 +80,10 @@ jobs:
         uv run ruff format . --check
 
     - name: Type checking with mypy
-      run: |
-        uv run mypy .
+      run: uv run mypy .
 
     - name: Test with pytest
-      run: |
-        uv run pytest
+      run: uv run pytest
 
   build:
     needs: test
