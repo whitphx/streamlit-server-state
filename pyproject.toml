@@ -25,9 +25,9 @@ source = "vcs"
 
 [tool.uv]
 dev-dependencies = [
-    "mypy>=1.13.0",
+    "mypy[faster-cache]>=1.15.0",
     "pytest>=8.3.3",
-    "ruff>=0.7.0",
+    "ruff>=0.9.10",
     # For testing older versions of Streamlit: https://discuss.streamlit.io/t/modulenotfounderror-no-module-named-altair-vegalite-v4/42921
     "altair<5",
     # For testing older versions of Streamlit: https://discuss.streamlit.io/t/streamlit-run-with-protobuf-error/25632/3
@@ -35,7 +35,6 @@ dev-dependencies = [
     # For testing older versions of Streamlit
     "setuptools>=75.2.0",
     "bump-my-version>=0.28.0",
-    "hatch-vcs>=0.4.0",
     "pre-commit>=4.2.0",
 ]
 
