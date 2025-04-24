@@ -51,7 +51,7 @@ jobs:
         persist-credentials: false
 
     - name: Install the latest version of uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@v6
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5.4.0
@@ -95,7 +95,7 @@ jobs:
           fetch-depth: 0  # Fetch all history for hatch-vcs to get the correct version
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v6
 
       - name: "Set up Python"
         uses: actions/setup-python@v5
