@@ -1,0 +1,11 @@
+name: Install Aikido Safe Chain
+description: >-
+  Install Aikido Safe Chain in CI mode so that subsequent npm/yarn/pnpm
+  invocations are scanned for malicious packages before execution.
+  See https://github.com/AikidoSec/safe-chain#usage-in-cicd
+runs:
+  using: composite
+  steps:
+    - name: Install Aikido Safe Chain
+      shell: bash
+      run: curl -fsSL https://github.com/AikidoSec/safe-chain/releases/latest/download/install-safe-chain.sh | sh -s -- --ci

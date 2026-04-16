@@ -50,6 +50,9 @@ jobs:
       with:
         persist-credentials: false
 
+    - name: Install Aikido Safe Chain
+      uses: ./.github/actions/install-safe-chain
+
     - name: Install the latest version of uv
       uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
 
@@ -93,6 +96,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0  # Fetch all history for hatch-vcs to get the correct version
+
+      - name: Install Aikido Safe Chain
+        uses: ./.github/actions/install-safe-chain
 
       - name: Install uv
         uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
