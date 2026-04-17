@@ -1,0 +1,24 @@
+name: Install Aikido Safe Chain
+description: >-
+  Install Aikido Safe Chain in CI mode so that subsequent npm/yarn/pnpm
+  invocations are scanned for malicious packages before execution.
+  See https://github.com/AikidoSec/safe-chain#usage-in-cicd
+runs:
+  using: composite
+  steps:
+    - name: Download and verify Aikido Safe Chain installer
+      shell: bash
+      env:
+        # Pin to a specific release. Bump the version and checksum together.
+        # Checksum comes from the GitHub release asset digest:
+        #   gh release view --repo AikidoSec/safe-chain 1.4.7 --json assets
+        SAFE_CHAIN_VERSION: "1.4.7"
+        SAFE_CHAIN_INSTALLER_SHA256: "54c750232d149106ecf4f5f28fee82ba49d2428f1e411e0ed961c0263ae19eaf"
+      run: |
+        set -euo pipefail
+        installer="$(mktemp)"
+        url="https://github.com/AikidoSec/safe-chain/releases/download/${SAFE_CHAIN_VERSION}/install-safe-chain.sh"
+        curl -fL -o "$installer" "$url"
+        echo "${SAFE_CHAIN_INSTALLER_SHA256}  ${installer}" | sha256sum -c -
+        sh "$installer" --ci
+        rm -f "$installer"
