@@ -1,0 +1,183 @@
+name: Test and Build
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ main ]
+
+permissions: {}
+
+jobs:
+  set-build-info:
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.build-info.outputs.branch }}
+      tag: ${{ steps.build-info.outputs.tag }}
+      trigger-sha: ${{ steps.build-info.outputs.trigger-sha }}
+      head-sha: ${{ steps.build-info.outputs.head-sha }}
+      pr-number: ${{ steps.build-info.outputs.pr-number }}
+    steps:
+      - name: Save build info (pull_request)
+        if: github.event_name == 'pull_request'
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          TRIGGER_SHA: ${{ github.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "$HEAD_REF" > branch
+          echo "" > tag
+          echo "$HEAD_SHA" > head-sha
+          echo "$TRIGGER_SHA" > trigger-sha
+          echo "$PR_NUMBER" > pr-number
+      - name: Save build info (push, branch)
+        if: github.event_name == 'push' && github.ref_type == 'branch'
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          echo "$REF_NAME" > branch
+          echo "" > tag
+          echo "$SHA" > head-sha
+          echo "$SHA" > trigger-sha
+          echo "" > pr-number
+      - name: Save build info (push, tag)
+        if: github.event_name == 'push' && github.ref_type == 'tag'
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
+        run: |
+          echo "" > branch
+          echo "$REF_NAME" > tag
+          echo "$SHA" > head-sha
+          echo "$SHA" > trigger-sha
+          echo "" > pr-number
+      - name: Output build info
+        id: build-info
+        run: |
+          {
+            echo "branch=$(cat branch)"
+            echo "tag=$(cat tag)"
+            echo "trigger-sha=$(cat trigger-sha)"
+            echo "head-sha=$(cat head-sha)"
+            echo "pr-number=$(cat pr-number)"
+          } >> "$GITHUB_OUTPUT"
+      - name: Upload build info
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: build-info
+          path: |
+            branch
+            tag
+            head-sha
+            trigger-sha
+            pr-number
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        streamlit-version: [null]
+        include:
+          # Test with streamlit <1.4.0 and >=1.4.0. See https://github.com/whitphx/streamlit-server-state/issues/64
+          - python-version: 3.9
+            streamlit-version: 1.0.0
+          - python-version: 3.9
+            streamlit-version: 1.4.0
+          # Test with streamlit >=1.6.0. See https://github.com/whitphx/streamlit-webrtc/issues/709
+          - python-version: 3.9
+            streamlit-version: 1.6.0
+          # Test with streamlit >=1.8.0. See https://github.com/whitphx/streamlit-webrtc/issues/759
+          - python-version: 3.9
+            streamlit-version: 1.8.0
+          # Test with streamlit >=1.12.0. See https://github.com/whitphx/streamlit-server-state/issues/128
+          - python-version: 3.9
+            streamlit-version: 1.12.0
+          # Test with streamlit >=1.12.1. See https://github.com/whitphx/streamlit-server-state/issues/135
+          - python-version: 3.9
+            streamlit-version: 1.12.1
+          # Test with streamlit >=1.14.0. See https://github.com/whitphx/streamlit-server-state/pull/175
+          - python-version: 3.9
+            streamlit-version: 1.14.0
+          # Test with streamlit >=1.18.0. See https://github.com/whitphx/streamlit-server-state/issues/171
+          - python-version: 3.9
+            streamlit-version: 1.18.0
+          # Test with streamlit >=1.38.0. See https://github.com/whitphx/streamlit-server-state/pull/232
+          - python-version: 3.9
+            streamlit-version: 1.38.0
+
+    steps:
+    - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        persist-credentials: false
+
+    - name: Install Aikido Safe Chain
+      uses: ./.github/actions/install-safe-chain
+
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: uv sync --all-extras --dev
+
+    - name: Install a specific version of Streamlit
+      if: ${{ matrix.streamlit-version }}
+      run: |
+        uv remove streamlit
+        uv add streamlit=="${STREAMLIT_VERSION}"
+      env:
+        STREAMLIT_VERSION: ${{ matrix.streamlit-version }}
+
+    - name: Show Python and Streamlit versions
+      run: |
+        python -V
+        uv run streamlit version
+
+    - name: Run Ruff
+      run: |
+        uv run ruff check --output-format=github .
+        uv run ruff format . --check
+
+    - name: Type checking with mypy
+      run: uv run mypy .
+
+    - name: Test with pytest
+      run: uv run pytest
+
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0  # Fetch all history for hatch-vcs to get the correct version
+
+      - name: Install Aikido Safe Chain
+        uses: ./.github/actions/install-safe-chain
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@85856786d1ce8acfbcc2f13a5f3fbd6b938f9f41 # v7.1.2
+
+      - name: "Set up Python"
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Build the package
+        run: uv build
+
+      - name: Upload the built files as an artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: streamlit-server-state-${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || github.sha  }}
+          path: dist
