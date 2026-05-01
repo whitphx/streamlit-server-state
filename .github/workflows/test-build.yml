@@ -140,7 +140,7 @@ jobs:
     - name: Show Python and Streamlit versions
       run: |
         python -V
-        uv run streamlit version
+        uv pip show streamlit | grep -i ^version
 
     - name: Run Ruff
       run: |
