@@ -1,0 +1,181 @@
+name: Post-build
+
+on:
+  # For security reasons, this workflow is separated from the test-and-build workflow and triggered by the `workflow_run` event following it.
+  # The deployment jobs need access to the repository secrets,
+  # however, workflows triggered by the `pull_request` event don't have access to the secrets for security reasons
+  # because those workflows check out the PR's branch that may have malicious external contributors' changes,
+  # so we can't use the `pull_request` event to trigger the deployment jobs.
+  # Then, we have to run the deployment jobs in this separated workflow that is allowed to access the secrets because it runs in the context of the default branch which can be considered as a trusted branch.
+  # It is a security good practice introduced in the GitHub's official blog, https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/
+  workflow_run:
+    workflows: ["Test and Build"]
+    types:
+      - completed
+
+permissions: {}
+
+jobs:
+  get-build-info:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      branch: ${{ steps.build-info.outputs.branch }}
+      tag: ${{ steps.build-info.outputs.tag }}
+      trigger-sha: ${{ steps.build-info.outputs.trigger-sha }}
+      head-sha: ${{ steps.build-info.outputs.head-sha }}
+      pr-number: ${{ steps.build-info.outputs.pr-number }}
+    steps:
+      - name: Download build info
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: build-info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Read build info
+        id: build-info
+        run: |
+          {
+            echo "branch=$(cat branch)"
+            echo "tag=$(cat tag)"
+            echo "trigger-sha=$(cat trigger-sha)"
+            echo "head-sha=$(cat head-sha)"
+            echo "pr-number=$(cat pr-number)"
+          } | tee -a "$GITHUB_OUTPUT"
+
+  deploy-preview-wheel:
+    needs: get-build-info
+    if: ${{ needs.get-build-info.outputs.pr-number }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    name: Deploy wheel file to Cloudflare Pages
+    outputs:
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - run: mkdir -p ${{ runner.temp }}/artifacts/
+
+      - name: Download all the dists
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: streamlit-server-state-${{ needs.get-build-info.outputs.trigger-sha }}
+          path: ${{ runner.temp }}/artifacts/streamlit-server-state
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65 # v3.14.1
+        id: deploy
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy ${{ runner.temp }}/artifacts/streamlit-server-state --project-name=streamlit-server-state-preview --branch=${{ needs.get-build-info.outputs.branch }} --commit-hash=${{ needs.get-build-info.outputs.head-sha }}
+
+      - name: Comment on the PR to inform the deployment file URLs
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          ISSUE_NUMBER: ${{ needs.get-build-info.outputs.pr-number }}
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+          ARTIFACTS_DIR: ${{ runner.temp }}/artifacts/streamlit-server-state
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const deploymentUrl = process.env.DEPLOYMENT_URL;
+            const artifactsDir = process.env.ARTIFACTS_DIR;
+
+            // Get all files in the artifacts directory
+            const allFiles = fs.readdirSync(artifactsDir);
+            // Filter to include only wheel (.whl) and source distribution (.tar.gz) files
+            const files = allFiles.filter(file => file.endsWith('.whl') || file.endsWith('.tar.gz'));
+
+            // Create message with links to each file
+            let fileLinks = files.map(file => {
+              const installCommand = `pip install ${deploymentUrl}/${file}`;
+              return `- [${file}](${deploymentUrl}/${file})\n  \`\`\`bash\n  ${installCommand}\n  \`\`\``;
+            }).join('\n');
+
+            const message = `📦 Wheel files have been deployed to Cloudflare Pages:
+
+            ${fileLinks}`;
+
+            github.rest.issues.createComment({
+              issue_number: process.env.ISSUE_NUMBER,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
+
+  publish-to-pypi:
+    name: Publish Python 🐍 distribution 📦 to PyPI
+    needs: [get-build-info]
+    if: startsWith(needs.get-build-info.outputs.tag, 'v')
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/streamlit-server-state
+    permissions:
+      contents: read  # For downloading artifacts
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      with:
+        name: streamlit-server-state-${{ needs.get-build-info.outputs.tag }}
+        path: dist/
+        run-id: ${{ github.event.workflow_run.id }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Publish distribution 📦 to PyPI
+      uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
+
+  github-release:
+    name: >-
+      Sign the Python 🐍 distribution 📦 with Sigstore
+      and upload them to GitHub Release
+    needs: [publish-to-pypi, get-build-info]
+    if: startsWith(needs.get-build-info.outputs.tag, 'v')
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # IMPORTANT: mandatory for making GitHub Releases
+      id-token: write  # IMPORTANT: mandatory for sigstore
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+      with:
+        name: streamlit-server-state-${{ needs.get-build-info.outputs.tag }}
+        path: dist/
+        run-id: ${{ github.event.workflow_run.id }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Sign the dists with Sigstore
+      uses: sigstore/gh-action-sigstore-python@f832326173235dcb00dd5d92cd3f353de3188e6c # v3.1.0
+      with:
+        inputs: >-
+          ./dist/*.tar.gz
+          ./dist/*.whl
+    - name: Create GitHub Release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        TAG_NAME: ${{ needs.get-build-info.outputs.tag }}
+      run: >-
+        gh release create
+        "$TAG_NAME"
+        --repo "$GITHUB_REPOSITORY"
+        --notes ""
+    - name: Upload artifact signatures to GitHub Release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        TAG_NAME: ${{ needs.get-build-info.outputs.tag }}
+      # Upload to GitHub Release using the `gh` CLI.
+      # `dist/` contains the built packages, and the
+      # sigstore-produced signatures and certificates.
+      run: >-
+        gh release upload
+        "$TAG_NAME" dist/**
+        --repo "$GITHUB_REPOSITORY"
