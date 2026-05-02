@@ -37,23 +37,13 @@ jobs:
       - name: Read build info
         id: build-info
         run: |
-          branch="$(cat branch)"
-          tag="$(cat tag)"
-          trigger_sha="$(cat trigger-sha)"
-          head_sha="$(cat head-sha)"
-          pr_number="$(cat pr-number)"
-          echo "branch=$branch"
-          echo "tag=$tag"
-          echo "trigger-sha=$trigger_sha"
-          echo "head-sha=$head_sha"
-          echo "pr-number=$pr_number"
           {
-            echo "branch=$branch"
-            echo "tag=$tag"
-            echo "trigger-sha=$trigger_sha"
-            echo "head-sha=$head_sha"
-            echo "pr-number=$pr_number"
-          } >> "$GITHUB_OUTPUT"
+            echo "branch=$(cat branch)"
+            echo "tag=$(cat tag)"
+            echo "trigger-sha=$(cat trigger-sha)"
+            echo "head-sha=$(cat head-sha)"
+            echo "pr-number=$(cat pr-number)"
+          } | tee -a "$GITHUB_OUTPUT"
 
   deploy-preview-wheel:
     needs: get-build-info

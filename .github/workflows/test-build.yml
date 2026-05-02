@@ -11,6 +11,9 @@ permissions: {}
 
 jobs:
   set-build-info:
+    # The branches below cover the events declared in `on:` (push branch/tag, pull_request).
+    # If a new trigger (workflow_dispatch, schedule, etc.) is added, extend this job to handle it,
+    # otherwise the artifact upload step will run with no input files and fail the workflow.
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.build-info.outputs.branch }}
