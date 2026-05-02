@@ -76,7 +76,7 @@ jobs:
             pages deploy ${{ runner.temp }}/artifacts/streamlit-server-state --project-name=streamlit-server-state-preview --branch=${{ needs.get-build-info.outputs.branch }} --commit-hash=${{ needs.get-build-info.outputs.head-sha }}
 
       - name: Comment on the PR to inform the deployment file URLs
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           ISSUE_NUMBER: ${{ needs.get-build-info.outputs.pr-number }}
           DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
